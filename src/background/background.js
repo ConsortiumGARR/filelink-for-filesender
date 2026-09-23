@@ -190,7 +190,12 @@ async function refreshAllAccounts() {
   const accounts = await browser.cloudFile.getAllAccounts();
   for (const a of accounts) {
     const cfg = await loadConfig(a.id);
-    if (!cfg) continue;
+    if (!cfg || !cfg.aup) continue;
+    try {
+      await browser.cloudFile.updateAccount(a.id, { configured: true });
+    } catch (e) {
+      warn('updateAccount failed', errText(e));
+    }
     try {
       await applySizeLimit(a.id, await instanceConfig(cfg.baseUrl));
     } catch (e) {

@@ -32,7 +32,7 @@ globalThis.crypto = { getRandomValues: function (a) {
   for (var i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256); return a; } };
 
 var S = { notes: [], uploads: [], windows: 0, removed: [], pushes: 0, config: null, session: {},
-  deleted: [], removedKeys: [],
+  deleted: [], removedKeys: [], allAccounts: [], updateAccountCalls: [],
   link: null, results: {}, listeners: {}, msgListeners: [], removedListeners: [] };
 var NOW = Math.round(Date.now() / 1000);
 
@@ -53,8 +53,8 @@ globalThis.browser = {
   cloudFile: {
     onFileUpload: ev('upload'), onFileUploadAbort: ev('abort'),
     onFileDeleted: ev('fileDeleted'), onAccountDeleted: ev('accountDeleted'),
-    getAllAccounts: function () { return Promise.resolve([]); },
-    updateAccount: function () { return Promise.resolve(); },
+    getAllAccounts: function () { return Promise.resolve(S.allAccounts || []); },
+    updateAccount: function (id, props) { S.updateAccountCalls.push({ id: id, props: props }); return Promise.resolve(); },
   },
   runtime: {
     onMessage: { addListener: function (fn) { S.msgListeners.push(fn); } },
@@ -377,6 +377,24 @@ step(function () { check('reason in window', S.init.files[0].reason &&
   msg({ type: 'options-cancel', accountId: 'acc1' }); });
 step(function () {});
 step(function () { check('cancel -> aborted', S.results.n && S.results.n.aborted, S.results.n); });
+
+// 13. startup: known accounts get "configured" and size limit re-asserted
+step(function () { S.config = baseConfig(); S.allAccounts = [{ id: 'acc1' }]; S.updateAccountCalls = [];
+  refreshAllAccounts(); });
+step(function () {});
+step(function () {
+  check('startup re-asserts configured', S.updateAccountCalls.some(function (c) {
+    return c.id === 'acc1' && c.props.configured === true; }), S.updateAccountCalls);
+  check('startup applies size limit', S.updateAccountCalls.some(function (c) {
+    return c.id === 'acc1' && c.props.uploadSizeLimit === 1000000; }), S.updateAccountCalls);
+});
+
+// 13b. startup: account with terms not accepted is left alone
+step(function () { S.config = baseConfig({ aup: false }); S.allAccounts = [{ id: 'acc1' }]; S.updateAccountCalls = [];
+  refreshAllAccounts(); });
+step(function () {});
+step(function () { check('startup skips account without accepted terms', S.updateAccountCalls.length === 0,
+  S.updateAccountCalls); });
 """
 
 
