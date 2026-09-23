@@ -32,7 +32,7 @@ globalThis.crypto = { getRandomValues: function (a) {
   for (var i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256); return a; } };
 
 var S = { notes: [], uploads: [], windows: 0, removed: [], pushes: 0, config: null, session: {},
-  deleted: [], removedKeys: [], allAccounts: [], updateAccountCalls: [],
+  deleted: [], removedKeys: [], allAccounts: [], updateAccountCalls: [], startupListeners: [],
   link: null, results: {}, listeners: {}, msgListeners: [], removedListeners: [] };
 var NOW = Math.round(Date.now() / 1000);
 
@@ -58,6 +58,7 @@ globalThis.browser = {
   },
   runtime: {
     onMessage: { addListener: function (fn) { S.msgListeners.push(fn); } },
+    onStartup: { addListener: function (fn) { S.startupListeners.push(fn); } },
     sendMessage: function () { S.pushes++; return Promise.resolve(); },
     getPlatformInfo: function () { return Promise.resolve({}); },
   },
@@ -395,6 +396,11 @@ step(function () { S.config = baseConfig({ aup: false }); S.allAccounts = [{ id:
 step(function () {});
 step(function () { check('startup skips account without accepted terms', S.updateAccountCalls.length === 0,
   S.updateAccountCalls); });
+
+// 13c. an onStartup listener exists: it is what makes Thunderbird start the event page
+// at app startup, so that the refresh above runs
+step(function () { check('onStartup listener registered', S.startupListeners.length === 1,
+  S.startupListeners.length); });
 
 // 14. insecure http:// base url refused before any request is signed
 step(function () { reset(baseConfig({ baseUrl: 'http://fs.example.org/rest.php' })); start('q1', file(90, 'q1.txt')); });

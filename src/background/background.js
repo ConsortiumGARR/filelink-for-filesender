@@ -178,11 +178,21 @@ browser.runtime.onMessage.addListener((msg) => {
 
 async function refreshAllAccounts() {
   const accounts = await browser.cloudFile.getAllAccounts();
+  log(
+    'refreshAllAccounts: found',
+    accounts.length,
+    'account(s)',
+    accounts.map((a) => a.id + ' configured=' + a.configured),
+  );
   for (const a of accounts) {
     const cfg = await loadConfig(a.id);
-    if (!cfg || !cfg.aup) continue;
+    if (!cfg || !cfg.aup) {
+      log('refreshAllAccounts: skipping', a.id, cfg ? 'terms not accepted' : 'no stored config');
+      continue;
+    }
     try {
       await browser.cloudFile.updateAccount(a.id, { configured: true });
+      log('refreshAllAccounts: re-asserted configured=true for', a.id);
     } catch (e) {
       warn('updateAccount failed', errText(e));
     }
@@ -195,6 +205,9 @@ async function refreshAllAccounts() {
 }
 
 refreshAllAccounts().catch((e) => warn('refresh accounts failed', errText(e)));
+// Without an onStartup listener Thunderbird does not start this event page at app
+// startup, so the call above would not run and accounts would stay unconfigured.
+browser.runtime.onStartup.addListener(() => {});
 
 function uploadResult(cfg, url, expires, encrypted) {
   const ret = {

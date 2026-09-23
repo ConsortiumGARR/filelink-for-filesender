@@ -258,6 +258,15 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 
 ## Thunderbird cloudFile gotchas
 
+- An account's `configured` flag lives only in memory (`_configured = false` in
+  Thunderbird's `ext-cloudFile.js`): after every restart it is false and the account is
+  not offered in the compose window until `updateAccount({configured: true})`.
+  `refreshAllAccounts()` re-asserts it at background load for every account with saved
+  settings and accepted terms.
+- At app startup Thunderbird does not start an MV3 event page that has persisted
+  listeners: it only primes them, unless one of them is `runtime.onStartup`
+  (`ext-backgroundPage.js`). The empty `onStartup` listener is what makes the
+  background, and so `refreshAllAccounts()`, run at startup. Never remove it.
 - `onFileUpload(account, fileInfo, tab, relatedFileInfo)` must return `{url,
   templateInfo?, error?, aborted?}`. `error` is boolean or string.
 - `templateInfo` is a CloudFileTemplateInfo: service_name, service_url, service_icon,
