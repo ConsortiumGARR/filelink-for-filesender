@@ -395,6 +395,18 @@ step(function () { S.config = baseConfig({ aup: false }); S.allAccounts = [{ id:
 step(function () {});
 step(function () { check('startup skips account without accepted terms', S.updateAccountCalls.length === 0,
   S.updateAccountCalls); });
+
+// 14. insecure http:// base url refused before any request is signed
+step(function () { reset(baseConfig({ baseUrl: 'http://fs.example.org/rest.php' })); start('q1', file(90, 'q1.txt')); });
+step(function () { check('insecure url refused', S.results.q1.error === 'errInsecureUrl' && S.uploads.length === 0,
+  S.results.q1); });
+
+// 14b. credential check over http:// refused before signing the request
+step(function () { reset(baseConfig());
+  msg({ type: 'check-credentials', baseUrl: 'http://fs.example.org', username: 'u', apikey: 'good' })
+    .then(function (r) { S.cc3 = r; }); });
+step(function () { check('insecure credential check refused', S.cc3 && S.cc3.ok === false &&
+  S.cc3.error === 'errInsecureUrl', S.cc3); });
 """
 
 

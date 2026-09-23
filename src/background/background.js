@@ -4,25 +4,12 @@
 
 const fs = globalThis.filesender;
 const fc = globalThis.fscrypto;
+const acct = globalThis.fsAccount;
 
 const activeUploads = new Map();
 
 const t = (key, ...subs) => browser.i18n.getMessage(key, subs);
 
-function normalizeBaseUrl(u) {
-  u = (u || '').trim().replace(/\/+$/, '');
-  if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
-  if (!/\/rest\.php$/i.test(u)) u += '/rest.php';
-  return u;
-}
-
-const DEFAULT_OPTIONS = {
-  email_me_on_expire: true,
-  email_upload_complete: false,
-  email_download_complete: true,
-  email_report_on_closing: true,
-  must_be_logged_in_to_download: false,
-};
 const OPTION_LABELS = {
   email_me_on_expire: 'optEmailMeOnExpire',
   email_upload_complete: 'optEmailUploadComplete',
@@ -38,14 +25,14 @@ async function loadConfig(accountId) {
   if (!c || !c.baseUrl || !c.username || !c.apikey) return null;
   const d = c.defaults || {};
   return {
-    baseUrl: normalizeBaseUrl(c.baseUrl),
+    baseUrl: acct.normalizeBaseUrl(c.baseUrl),
     username: String(c.username).trim(),
     from: String(c.email || '').trim(),
     apikey: String(c.apikey).trim(),
     aup: c.aup === true,
     askOptions: c.askOptions !== false,
     days: Number(d.days) || null,
-    options: Object.assign({}, DEFAULT_OPTIONS, d.options),
+    options: Object.assign({}, acct.DEFAULT_OPTIONS, d.options),
   };
 }
 
@@ -53,7 +40,7 @@ const INSTANCE_TTL_MS = 3600 * 1000;
 const instanceCache = new Map();
 
 async function instanceConfig(baseUrl) {
-  baseUrl = normalizeBaseUrl(baseUrl);
+  baseUrl = acct.normalizeBaseUrl(baseUrl);
   const hit = instanceCache.get(baseUrl);
   if (hit && Date.now() - hit.at < INSTANCE_TTL_MS) return hit.cfg;
   const cfg = await fs.getInstanceConfig({ baseUrl });
@@ -142,7 +129,7 @@ function updateKeepAlive() {
 function sanitizeChoice(raw, cfg, inst) {
   raw = raw || {};
   const options = {};
-  for (const k of Object.keys(DEFAULT_OPTIONS)) {
+  for (const k of Object.keys(acct.DEFAULT_OPTIONS)) {
     options[k] = raw.options && k in raw.options ? !!raw.options[k] : !!cfg.options[k];
   }
   return {
@@ -162,16 +149,19 @@ browser.runtime.onMessage.addListener((msg) => {
   }
   if (msg.type === 'check-credentials') {
     const account = {
-      baseUrl: normalizeBaseUrl(msg.baseUrl),
+      baseUrl: acct.normalizeBaseUrl(msg.baseUrl),
       username: String(msg.username || '').trim(),
       apikey: String(msg.apikey || '').trim(),
     };
+    if (acct.isInsecureUrl(account.baseUrl)) {
+      return Promise.resolve({ ok: false, error: t('errInsecureUrl') });
+    }
     return fs.request(account, { method: 'get', path: '/user/@me', data: {}, retries: 0 }).then(
       (user) => {
         log('credentials ok for', account.baseUrl, 'user id', user && user.id);
         const prefs = (user && user.transfer_preferences) || {};
         const options = {};
-        for (const k of Object.keys(DEFAULT_OPTIONS)) {
+        for (const k of Object.keys(acct.DEFAULT_OPTIONS)) {
           if (k in prefs)
             options[k] = fs.isTrue(prefs[k]) || (typeof prefs[k] === 'number' && prefs[k] > 0);
         }
@@ -278,6 +268,10 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
   if (!cfg) {
     log('not configured');
     return { error: t('errNotConfigured') };
+  }
+  if (acct.isInsecureUrl(cfg.baseUrl)) {
+    log('insecure base url', cfg.baseUrl);
+    return { error: t('errInsecureUrl') };
   }
   log(
     'config ok',

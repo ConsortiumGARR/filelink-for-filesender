@@ -37,6 +37,9 @@ and tooling live outside it.
   - `cleanup.js`: tracking and deletion of transfers of unsent mails
 - `src/lib/filesender.js`: FileSender REST signing + upload client (the tricky part)
 - `src/lib/fscrypto.js`: FileSender-compatible encryption (PBKDF2 + AES-GCM)
+- `src/lib/account.js`: shared account helpers (`DEFAULT_OPTIONS`, `normalizeBaseUrl`,
+  `isInsecureUrl`), used by both the background and the management page so the two never
+  drift apart on how a base URL is normalized or rejected
 - `src/lib/ui-common.js`: helpers shared by the pages (i18n fill, fit window height,
   days)
 - `src/management/`: account settings page (storage.local per account)
@@ -80,15 +83,17 @@ and tooling live outside it.
 - Plain JS, HTML, CSS and JSON. No package.json, no bundler, no transpiler, no Node.
   `tools/build.sh` only zips the files; they load into Thunderbird as-is.
 - Extension scripts are classic scripts, not ES modules. The manifest
-  `background.scripts` array lists `lib/filesender.js`, `lib/fscrypto.js`, then
-  `background/log.js`, `background/background.js`, `background/windows.js`,
-  `background/cleanup.js`. The libs are IIFEs that attach themselves to
-  `globalThis.filesender` / `globalThis.fscrypto`. The background files share the global
-  scope: top-level functions and `const`s are visible across files. Code running at load
-  time may only use what earlier files declare; listeners and functions may use
-  anything, since they run after all files are loaded. Keep it that way.
-- Pages load `../lib/ui-common.js` (and `../lib/fscrypto.js` for options),
-  `../css/common.css` and their own `../css/<page>.css`. No inline styles.
+  `background.scripts` array lists `lib/filesender.js`, `lib/account.js`,
+  `lib/fscrypto.js`, then `background/log.js`, `background/background.js`,
+  `background/windows.js`, `background/cleanup.js`. The libs are IIFEs that attach
+  themselves to `globalThis.filesender` / `globalThis.fsAccount` / `globalThis.fscrypto`.
+  The background files share the global scope: top-level functions and `const`s are
+  visible across files. Code running at load time may only use what earlier files
+  declare; listeners and functions may use anything, since they run after all files are
+  loaded. Keep it that way.
+- Pages load `../lib/ui-common.js` (and `../lib/fscrypto.js` for options,
+  `../lib/account.js` for management), `../css/common.css` and their own
+  `../css/<page>.css`. No inline styles.
 - All paths inside the extension (manifest, `windows.create`, `service_icon`) are
   relative to `src/`, the extension root (e.g. `options/options.html`); paths in HTML
   are relative to the page. `test/static_check.py` verifies that every file referenced
@@ -208,6 +213,11 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 
 - The page only has a limited API set (cloudFile, extension, i18n, runtime, storage).
   Get the account id with `new URL(location.href).searchParams.get('accountId')`.
+- `http://` base URLs are rejected, both on save (`management.js`) and, defense in
+  depth, before every upload and every "Test connection" call in `background.js`
+  (`fsAccount.isInsecureUrl`, `errInsecureUrl`/`mgmtInsecureUrl`): the API key and the
+  file content would otherwise travel in clear text. A scheme-less input is still
+  upgraded to `https://` by `normalizeBaseUrl`; only an explicit `http://` is refused.
 - Account record in `storage.local[accountId]`: `{baseUrl, username, email, apikey, aup,
   askOptions, defaults: {days, options: {email_me_on_expire, email_upload_complete,
   email_download_complete, email_report_on_closing, must_be_logged_in_to_download}}}`.

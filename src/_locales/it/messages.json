@@ -11,6 +11,9 @@
   "errNotConfigured": {
     "message": "FileSender non è configurato: apri le impostazioni dell'account e inserisci URL base, username e API key."
   },
+  "errInsecureUrl": {
+    "message": "FileSender è configurato con un indirizzo http:// non sicuro: apri le impostazioni dell'account e usa https://."
+  },
   "errAuth": {
     "message": "Autenticazione FileSender fallita: controlla username e API key nelle impostazioni dell'account."
   },
@@ -73,6 +76,9 @@
   },
   "mgmtInvalidEmail": {
     "message": "Inserisci un indirizzo email mittente valido."
+  },
+  "mgmtInsecureUrl": {
+    "message": "Usa un indirizzo https:// sicuro; http:// non è ammesso qui."
   },
   "mgmtSaved": {
     "message": "Salvato. FileSender è pronto all'uso."

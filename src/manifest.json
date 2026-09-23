@@ -21,6 +21,7 @@
   "background": {
     "scripts": [
       "lib/filesender.js",
+      "lib/account.js",
       "lib/fscrypto.js",
       "background/log.js",
       "background/background.js",

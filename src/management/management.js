@@ -19,22 +19,9 @@ const elTest = document.getElementById('test');
 const elTestStatus = document.getElementById('testStatus');
 const elStatus = document.getElementById('status');
 
-const DEFAULT_OPTIONS = {
-  email_me_on_expire: true,
-  email_upload_complete: false,
-  email_download_complete: true,
-  email_report_on_closing: true,
-  must_be_logged_in_to_download: false,
-};
 const FALLBACK_MAX_DAYS = 30;
 
-function normalizeBaseUrl(u) {
-  u = (u || '').trim().replace(/\/+$/, '');
-  if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
-  if (!/\/rest\.php$/i.test(u)) u += '/rest.php';
-  return u;
-}
-
+const { DEFAULT_OPTIONS, normalizeBaseUrl, isInsecureUrl } = globalThis.fsAccount;
 const { t } = globalThis.uiCommon;
 globalThis.uiCommon.localize();
 
@@ -116,6 +103,10 @@ if (!accountId) {
       setTestStatus(t('mgmtRequired'), 'err');
       return;
     }
+    if (isInsecureUrl(normalizeBaseUrl(elBase.value))) {
+      setTestStatus(t('mgmtInsecureUrl'), 'err');
+      return;
+    }
     elTest.disabled = true;
     setTestStatus(t('mgmtChecking'), '');
     let res = null;
@@ -153,6 +144,10 @@ if (!accountId) {
     const apikey = elKey.value.trim();
     if (!elBase.value.trim() || !username || !apikey) {
       setStatus(t('mgmtRequired'), 'err');
+      return;
+    }
+    if (isInsecureUrl(baseUrl)) {
+      setStatus(t('mgmtInsecureUrl'), 'err');
       return;
     }
     if (email && !EMAIL_RE.test(email)) {
