@@ -40,21 +40,44 @@ it is often not your email address.
 
 ## Installation
 
-A signed release is not published yet; install it as a temporary add-on:
+Thunderbird does not require add-ons to be signed, so the `.xpi` can be installed
+permanently without going through addons.thunderbird.net:
 
-1. Download or build `filelink-for-filesender-<version>.xpi` (see `docs/TESTING.md` to
-   build it from source).
+1. Download `filelink-for-filesender-<version>.xpi` from the
+   [releases page](https://github.com/ConsortiumGARR/filelink-for-filesender/releases).
 2. In Thunderbird, open "Add-ons and Themes" (Ctrl+Shift+A).
-3. Gear menu (top right) -> "Debug Add-ons" -> "Load Temporary Add-on..." and pick the
-   `.xpi` file.
+3. Gear menu (top right) -> "Install Add-on From File..." and pick the `.xpi` file.
+4. Accept the permissions prompt:
 
-A temporary add-on stays installed until Thunderbird restarts, and needs to be reloaded
-after every change.
+   <p align="center">
+     <img src="docs/images/install-permissions.png" alt="Permissions prompt" width="380">
+   </p>
+
+   - **Access your data for all websites**: the `https://*/*` host permission.
+     FileSender is self-hosted and sends no CORS headers, so the add-on needs a broad
+     permission to reach whichever instance you configure; it only ever contacts that
+     one instance.
+   - **Read and modify your email messages as you compose and send them**: the
+     `compose` permission, used only to know whether a mail was sent, saved or
+     discarded, so that transfers left over from a discarded mail are deleted from
+     FileSender. The add-on never reads or modifies the mail content.
+   - **Display notifications to you**: used for information you don't have to act on,
+     such as an upload option the server did not apply. Anything you must decide on
+     opens a window instead.
+
+Unlike a temporary add-on, this install survives a Thunderbird restart; to update, just
+repeat these steps with the new `.xpi`.
 
 ## Configuration
 
-1. Settings -> Composition -> "Attachments" -> "Add FileSender".
+1. Settings -> Composition -> "Attachments" -> "Add FileSender". Click the new entry's
+   name to rename it, e.g. if you configure more than one FileSender instance.
 2. Select the account in the list: the settings page opens on the right.
+
+   <p align="center">
+     <img src="docs/images/account-settings.png" alt="Account settings page" width="480">
+   </p>
+
 3. Fill in the base URL, username and API key from "Getting your FileSender credentials"
    above; optionally a sender email. Click "Test connection".
 4. Tick the terms of use, adjust the default upload options if you want, and save.
