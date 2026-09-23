@@ -1,0 +1,341 @@
+{
+  "extensionName": {
+    "message": "FileLink for FileSender"
+  },
+  "extensionDescription": {
+    "message": "Allega file grandi alle tue email come link di download FileSender."
+  },
+  "serviceName": {
+    "message": "FileSender"
+  },
+  "errNotConfigured": {
+    "message": "FileSender non è configurato: apri le impostazioni dell'account e inserisci URL base, username e API key."
+  },
+  "errAuth": {
+    "message": "Autenticazione FileSender fallita: controlla username e API key nelle impostazioni dell'account."
+  },
+  "errTooLarge": {
+    "message": "Il file supera la dimensione massima consentita da questa istanza FileSender."
+  },
+  "errFileName": {
+    "message": "Il nome del file contiene caratteri non ammessi da questa istanza FileSender. Rinomina il file e riprova."
+  },
+  "errNoUrl": {
+    "message": "Upload completato, ma FileSender non ha restituito un link di download."
+  },
+  "errUpload": {
+    "message": "Errore durante l'upload: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "FileSender HTTP 500: internal_error"
+      }
+    }
+  },
+  "mgmtTitle": {
+    "message": "Impostazioni FileSender"
+  },
+  "mgmtLead": {
+    "message": "Inserisci le credenziali per inviare file grandi come link di download FileSender."
+  },
+  "mgmtBaseUrl": {
+    "message": "URL base"
+  },
+  "mgmtBaseUrlHint": {
+    "message": "L'indirizzo della tua istanza FileSender. Se manca, /rest.php viene aggiunto automaticamente."
+  },
+  "mgmtUsername": {
+    "message": "Username"
+  },
+  "mgmtUsernameHint": {
+    "message": "Il valore \"username\" nel file filesender.py.ini scaricabile dal tuo profilo FileSender. Spesso non è la tua email."
+  },
+  "mgmtEmail": {
+    "message": "Email mittente"
+  },
+  "mgmtEmailHint": {
+    "message": "Mittente (from) dei trasferimenti. Lascia vuoto per usare l'email principale del tuo account FileSender; se la imposti, deve essere una delle email di quell'account."
+  },
+  "mgmtApikey": {
+    "message": "API key"
+  },
+  "mgmtApikeyHint": {
+    "message": "L'\"API secret\" nella pagina del tuo profilo FileSender."
+  },
+  "mgmtSave": {
+    "message": "Salva"
+  },
+  "mgmtInvalidAccount": {
+    "message": "Id account non valido."
+  },
+  "mgmtRequired": {
+    "message": "Compila URL base, username e API key."
+  },
+  "mgmtInvalidEmail": {
+    "message": "Inserisci un indirizzo email mittente valido."
+  },
+  "mgmtSaved": {
+    "message": "Salvato. FileSender è pronto all'uso."
+  },
+  "mgmtError": {
+    "message": "Errore: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "FileSender HTTP 500: internal_error"
+      }
+    }
+  },
+  "errAupNotAccepted": {
+    "message": "Non hai accettato i termini d'uso del servizio: apri le impostazioni dell'account."
+  },
+  "errEmptyFile": {
+    "message": "Il file è vuoto: FileSender non accetta file vuoti."
+  },
+  "mgmtTermsTitle": {
+    "message": "Termini d'uso"
+  },
+  "mgmtAup": {
+    "message": "Accetto i termini e le condizioni di questo servizio"
+  },
+  "mgmtAupHint": {
+    "message": "Puoi leggerli nella pagina di upload del servizio:"
+  },
+  "mgmtAupRequired": {
+    "message": "Devi accettare i termini d'uso del servizio."
+  },
+  "mgmtDefaultsTitle": {
+    "message": "Opzioni di upload predefinite di FileSender"
+  },
+  "mgmtDays": {
+    "message": "Scadenza dopo"
+  },
+  "mgmtDaysOne": {
+    "message": "1 giorno"
+  },
+  "mgmtDaysValue": {
+    "message": "$N$ giorni",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "mgmtDaysHint": {
+    "message": "Massimo consentito da questa istanza: $N$ giorni.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "mgmtInstanceUnavailable": {
+    "message": "Impossibile leggere la configurazione dell'istanza: controlla l'URL base."
+  },
+  "optEmailMeOnExpire": {
+    "message": "Avvisami quando scade"
+  },
+  "optEmailUploadComplete": {
+    "message": "Avvisami al termine del caricamento"
+  },
+  "optEmailDownloadComplete": {
+    "message": "Avvisami al download"
+  },
+  "optEmailReportOnClosing": {
+    "message": "Inviami un rapporto quando scade"
+  },
+  "optMustBeLoggedIn": {
+    "message": "Chi scarica deve accedere a FileSender per scaricare i file"
+  },
+  "ntfReuploadChanged": {
+    "message": "$FILE$ è cambiato: il file viene ricaricato.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      }
+    }
+  },
+  "ntfReuploadInvalid": {
+    "message": "Il link precedente di $FILE$ non è più valido: il file viene ricaricato.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      }
+    }
+  },
+  "ntfOptionsIgnored": {
+    "message": "FileSender non ha applicato alcune opzioni per $FILE$: $LIST$.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      },
+      "list": {
+        "content": "$2"
+      }
+    }
+  },
+  "errEncryptionMandatory": {
+    "message": "Questa istanza FileSender richiede la cifratura: attiva \"Chiedi le opzioni di upload a ogni upload\" nelle impostazioni dell'account."
+  },
+  "errEncryptionUnsupported": {
+    "message": "La cifratura non è disponibile su questa istanza FileSender."
+  },
+  "errPasswordInvalid": {
+    "message": "La password non rispetta i requisiti di questa istanza FileSender."
+  },
+  "mgmtBehaviourTitle": {
+    "message": "Comportamento"
+  },
+  "mgmtAskOptions": {
+    "message": "Chiedi le opzioni di upload (scadenza, notifiche, cifratura) a ogni upload"
+  },
+  "mgmtAskOptionsHint": {
+    "message": "Prima di ogni upload si apre una piccola finestra, precompilata con le opzioni qui sotto. Se disattivato, l'upload parte subito con queste opzioni e la cifratura non è disponibile."
+  },
+  "optTitle": {
+    "message": "Upload con FileSender"
+  },
+  "optTransferTitle": {
+    "message": "Impostazioni di trasferimento"
+  },
+  "optEncryptionTitle": {
+    "message": "Cifratura"
+  },
+  "optEncrypt": {
+    "message": "Cifra i file con una password"
+  },
+  "optShow": {
+    "message": "Mostra"
+  },
+  "optGenerate": {
+    "message": "Genera"
+  },
+  "optCopy": {
+    "message": "Copia"
+  },
+  "optCopied": {
+    "message": "Copiata"
+  },
+  "optPasswordWarning": {
+    "message": "Comunica la password ai destinatari separatamente (non in questa email). Non viene salvata da nessuna parte e non è recuperabile."
+  },
+  "optCancel": {
+    "message": "Annulla"
+  },
+  "optUpload": {
+    "message": "Carica"
+  },
+  "optRuleLength": {
+    "message": "almeno $N$ caratteri",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "optRuleMixed": {
+    "message": "lettere maiuscole e minuscole"
+  },
+  "optRuleNumbers": {
+    "message": "numeri"
+  },
+  "optRuleSpecial": {
+    "message": "simboli"
+  },
+  "optRuleAscii": {
+    "message": "niente lettere accentate o emoji"
+  },
+  "optPwRules": {
+    "message": "Requisiti della password: $LIST$.",
+    "placeholders": {
+      "list": {
+        "content": "$1"
+      }
+    }
+  },
+  "optPwMissing": {
+    "message": "Manca: $LIST$.",
+    "placeholders": {
+      "list": {
+        "content": "$1"
+      }
+    }
+  },
+  "errFileExtension": {
+    "message": "L'estensione $EXT$ non è ammessa da questa istanza FileSender.",
+    "placeholders": {
+      "ext": {
+        "content": "$1",
+        "example": "exe"
+      }
+    }
+  },
+  "reuseTitle": {
+    "message": "Riusare il link FileSender?"
+  },
+  "reuseText": {
+    "message": "Questo file è già stato caricato, ma il suo link scade il $WHEN$, tra meno di 24 ore.",
+    "placeholders": {
+      "when": {
+        "content": "$1",
+        "example": "24/09/26, 10:00"
+      }
+    }
+  },
+  "reuseEncrypted": {
+    "message": "Il link è cifrato: chi scarica deve usare la stessa password di prima."
+  },
+  "reuseReuse": {
+    "message": "Riusa il link"
+  },
+  "reuseReupload": {
+    "message": "Ricarica il file"
+  },
+  "mgmtChecking": {
+    "message": "Verifica delle credenziali in corso…"
+  },
+  "mgmtCredentialsInvalid": {
+    "message": "FileSender ha rifiutato le credenziali: controlla username e API key."
+  },
+  "mgmtTest": {
+    "message": "Verifica connessione"
+  },
+  "mgmtTestOk": {
+    "message": "Connessione riuscita: FileSender ha accettato le credenziali."
+  },
+  "mgmtTestFailed": {
+    "message": "Impossibile contattare FileSender: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "NetworkError"
+      }
+    }
+  },
+  "errBadEmail": {
+    "message": "L'email mittente non è tra quelle del tuo account FileSender: correggila o lasciala vuota nelle impostazioni dell'account."
+  },
+  "mgmtTestOkFilled": {
+    "message": "Connessione riuscita. Le opzioni predefinite sono state compilate dal tuo profilo FileSender: controllale, accetta i termini e salva."
+  },
+  "reuseTextValid": {
+    "message": "Questo file è già stato caricato con cifratura; il suo link è valido fino al $WHEN$.",
+    "placeholders": {
+      "when": {
+        "content": "$1",
+        "example": "07/10/26, 10:00"
+      }
+    }
+  },
+  "cleanupNote": {
+    "message": "I file caricati per una mail vengono cancellati da FileSender se rimuovi l'allegato o chiudi la mail senza inviarla né salvarla come bozza. I link riusati, inviati o salvati non vengono mai cancellati."
+  },
+  "mgmtDebug": {
+    "message": "Log dettagliati nella console (debug)"
+  },
+  "mgmtDebugHint": {
+    "message": "Vale per tutti gli account FileSender. Token, firme, chiavi e indirizzi email sono sempre oscurati. Gli errori vengono loggati comunque."
+  }
+}

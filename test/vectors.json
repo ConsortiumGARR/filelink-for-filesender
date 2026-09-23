@@ -1,0 +1,114 @@
+{
+  "baseUrl": "https://filesender.example.org/rest.php",
+  "username": "john.doe@example.org",
+  "apikey": "deadbeefcafebabe1234567890abcdef",
+  "timestamp": 1700000000,
+  "cases": [
+    {
+      "name": "get-files-tokens",
+      "method": "get",
+      "path": "/transfer/fileidsextended",
+      "data": {
+        "token": "tok-abc123"
+      },
+      "content": null,
+      "rawContent": null,
+      "contentType": "application/json",
+      "expectedSignedB64": "Z2V0JmZpbGVzZW5kZXIuZXhhbXBsZS5vcmcvcmVzdC5waHAvdHJhbnNmZXIvZmlsZWlkc2V4dGVuZGVkP3JlbW90ZV91c2VyPWpvaG4uZG9lQGV4YW1wbGUub3JnJnRpbWVzdGFtcD0xNzAwMDAwMDAwJnRva2VuPXRvay1hYmMxMjM=",
+      "expectedSignature": "0db04620e595598e60ed4dc9ddc37001327a0f5a",
+      "expectedUrl": "https://filesender.example.org/rest.php/transfer/fileidsextended?remote_user=john.doe%40example.org&signature=0db04620e595598e60ed4dc9ddc37001327a0f5a&timestamp=1700000000&token=tok-abc123"
+    },
+    {
+      "name": "post-transfer-unicode",
+      "method": "post",
+      "path": "/transfer",
+      "data": {},
+      "content": {
+        "from": "john.doe@example.org",
+        "files": [
+          {
+            "name": "file-è-ñ-😀.pdf",
+            "size": 123456
+          }
+        ],
+        "recipients": [
+          "jane.roe@example.org"
+        ],
+        "subject": "Subject with è and ñ",
+        "message": "Hello, large attachment",
+        "expires": 1700086400,
+        "aup_checked": 1,
+        "options": {
+          "get_a_link": 0
+        }
+      },
+      "rawContent": null,
+      "contentType": "application/json",
+      "expectedSignedB64": "cG9zdCZmaWxlc2VuZGVyLmV4YW1wbGUub3JnL3Jlc3QucGhwL3RyYW5zZmVyP3JlbW90ZV91c2VyPWpvaG4uZG9lQGV4YW1wbGUub3JnJnRpbWVzdGFtcD0xNzAwMDAwMDAwJnsiZnJvbSI6ImpvaG4uZG9lQGV4YW1wbGUub3JnIiwiZmlsZXMiOlt7Im5hbWUiOiJmaWxlLVx1MDBlOC1cdTAwZjEtXHVkODNkXHVkZTAwLnBkZiIsInNpemUiOjEyMzQ1Nn1dLCJyZWNpcGllbnRzIjpbImphbmUucm9lQGV4YW1wbGUub3JnIl0sInN1YmplY3QiOiJTdWJqZWN0IHdpdGggXHUwMGU4IGFuZCBcdTAwZjEiLCJtZXNzYWdlIjoiSGVsbG8sIGxhcmdlIGF0dGFjaG1lbnQiLCJleHBpcmVzIjoxNzAwMDg2NDAwLCJhdXBfY2hlY2tlZCI6MSwib3B0aW9ucyI6eyJnZXRfYV9saW5rIjowfX0=",
+      "expectedSignature": "c51acde86435775beedf239d649f1b4050e01742",
+      "expectedUrl": "https://filesender.example.org/rest.php/transfer?remote_user=john.doe%40example.org&signature=c51acde86435775beedf239d649f1b4050e01742&timestamp=1700000000"
+    },
+    {
+      "name": "put-chunk-binary",
+      "method": "put",
+      "path": "/file/123/chunk/0",
+      "data": {
+        "key": "puid0123456789abcdef",
+        "roundtriptoken": "rt_0123456789abcdef"
+      },
+      "content": null,
+      "rawContent": "AAECA3+A//4=",
+      "contentType": "application/octet-stream",
+      "expectedSignedB64": "cHV0JmZpbGVzZW5kZXIuZXhhbXBsZS5vcmcvcmVzdC5waHAvZmlsZS8xMjMvY2h1bmsvMD9rZXk9cHVpZDAxMjM0NTY3ODlhYmNkZWYmcmVtb3RlX3VzZXI9am9obi5kb2VAZXhhbXBsZS5vcmcmcm91bmR0cmlwdG9rZW49cnRfMDEyMzQ1Njc4OWFiY2RlZiZ0aW1lc3RhbXA9MTcwMDAwMDAwMCYAAQIDf4D//g==",
+      "expectedSignature": "01760d88ecb03e133277003efd4abd4e835d96a1",
+      "expectedUrl": "https://filesender.example.org/rest.php/file/123/chunk/0?key=puid0123456789abcdef&remote_user=john.doe%40example.org&roundtriptoken=rt_0123456789abcdef&signature=01760d88ecb03e133277003efd4abd4e835d96a1&timestamp=1700000000"
+    },
+    {
+      "name": "put-file-complete",
+      "method": "put",
+      "path": "/file/123",
+      "data": {
+        "key": "puid0123456789abcdef",
+        "roundtriptoken": "rt_0123456789abcdef"
+      },
+      "content": {
+        "complete": true
+      },
+      "rawContent": null,
+      "contentType": "application/json",
+      "expectedSignedB64": "cHV0JmZpbGVzZW5kZXIuZXhhbXBsZS5vcmcvcmVzdC5waHAvZmlsZS8xMjM/a2V5PXB1aWQwMTIzNDU2Nzg5YWJjZGVmJnJlbW90ZV91c2VyPWpvaG4uZG9lQGV4YW1wbGUub3JnJnJvdW5kdHJpcHRva2VuPXJ0XzAxMjM0NTY3ODlhYmNkZWYmdGltZXN0YW1wPTE3MDAwMDAwMDAmeyJjb21wbGV0ZSI6dHJ1ZX0=",
+      "expectedSignature": "7e05bed3f04628d69bd7d7de513bc8931eec5281",
+      "expectedUrl": "https://filesender.example.org/rest.php/file/123?key=puid0123456789abcdef&remote_user=john.doe%40example.org&roundtriptoken=rt_0123456789abcdef&signature=7e05bed3f04628d69bd7d7de513bc8931eec5281&timestamp=1700000000"
+    },
+    {
+      "name": "put-transfer-complete",
+      "method": "put",
+      "path": "/transfer/55",
+      "data": {
+        "key": "puid0123456789abcdef"
+      },
+      "content": {
+        "complete": true
+      },
+      "rawContent": null,
+      "contentType": "application/json",
+      "expectedSignedB64": "cHV0JmZpbGVzZW5kZXIuZXhhbXBsZS5vcmcvcmVzdC5waHAvdHJhbnNmZXIvNTU/a2V5PXB1aWQwMTIzNDU2Nzg5YWJjZGVmJnJlbW90ZV91c2VyPWpvaG4uZG9lQGV4YW1wbGUub3JnJnRpbWVzdGFtcD0xNzAwMDAwMDAwJnsiY29tcGxldGUiOnRydWV9",
+      "expectedSignature": "7241cfc1feb73b8232af226c74e9ced1593ecf37",
+      "expectedUrl": "https://filesender.example.org/rest.php/transfer/55?key=puid0123456789abcdef&remote_user=john.doe%40example.org&signature=7241cfc1feb73b8232af226c74e9ced1593ecf37&timestamp=1700000000"
+    },
+    {
+      "name": "delete-transfer",
+      "method": "delete",
+      "path": "/transfer/55",
+      "data": {
+        "key": "puid0123456789abcdef"
+      },
+      "content": null,
+      "rawContent": null,
+      "contentType": "application/json",
+      "expectedSignedB64": "ZGVsZXRlJmZpbGVzZW5kZXIuZXhhbXBsZS5vcmcvcmVzdC5waHAvdHJhbnNmZXIvNTU/a2V5PXB1aWQwMTIzNDU2Nzg5YWJjZGVmJnJlbW90ZV91c2VyPWpvaG4uZG9lQGV4YW1wbGUub3JnJnRpbWVzdGFtcD0xNzAwMDAwMDAw",
+      "expectedSignature": "5284a1100b88cf772deb2c2f96e871216a6732be",
+      "expectedUrl": "https://filesender.example.org/rest.php/transfer/55?key=puid0123456789abcdef&remote_user=john.doe%40example.org&signature=5284a1100b88cf772deb2c2f96e871216a6732be&timestamp=1700000000"
+    }
+  ]
+}

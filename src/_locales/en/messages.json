@@ -1,0 +1,341 @@
+{
+  "extensionName": {
+    "message": "FileLink for FileSender"
+  },
+  "extensionDescription": {
+    "message": "Attach large files to your emails as FileSender download links."
+  },
+  "serviceName": {
+    "message": "FileSender"
+  },
+  "errNotConfigured": {
+    "message": "FileSender is not configured: open the account settings and enter base URL, username and API key."
+  },
+  "errAuth": {
+    "message": "FileSender authentication failed: check username and API key in the account settings."
+  },
+  "errTooLarge": {
+    "message": "The file exceeds the maximum size allowed by this FileSender instance."
+  },
+  "errFileName": {
+    "message": "The file name contains characters not allowed by this FileSender instance. Rename the file and try again."
+  },
+  "errNoUrl": {
+    "message": "Upload completed, but FileSender did not return a download link."
+  },
+  "errUpload": {
+    "message": "Upload error: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "FileSender HTTP 500: internal_error"
+      }
+    }
+  },
+  "mgmtTitle": {
+    "message": "FileSender settings"
+  },
+  "mgmtLead": {
+    "message": "Enter your credentials to send large files as FileSender download links."
+  },
+  "mgmtBaseUrl": {
+    "message": "Base URL"
+  },
+  "mgmtBaseUrlHint": {
+    "message": "The address of your FileSender instance. /rest.php is appended automatically if missing."
+  },
+  "mgmtUsername": {
+    "message": "Username"
+  },
+  "mgmtUsernameHint": {
+    "message": "The \"username\" value in the filesender.py.ini file you can download from your FileSender profile. It is often not your email address."
+  },
+  "mgmtEmail": {
+    "message": "Sender email"
+  },
+  "mgmtEmailHint": {
+    "message": "Sender (from) of the transfers. Leave it empty to use the main email of your FileSender account; if you set it, it must be one of the emails of that account."
+  },
+  "mgmtApikey": {
+    "message": "API key"
+  },
+  "mgmtApikeyHint": {
+    "message": "The \"API secret\" shown on your FileSender profile page."
+  },
+  "mgmtSave": {
+    "message": "Save"
+  },
+  "mgmtInvalidAccount": {
+    "message": "Invalid account id."
+  },
+  "mgmtRequired": {
+    "message": "Fill in base URL, username and API key."
+  },
+  "mgmtInvalidEmail": {
+    "message": "Enter a valid sender email address."
+  },
+  "mgmtSaved": {
+    "message": "Saved. FileSender is ready to use."
+  },
+  "mgmtError": {
+    "message": "Error: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "FileSender HTTP 500: internal_error"
+      }
+    }
+  },
+  "errAupNotAccepted": {
+    "message": "The terms of use of the service have not been accepted: open the account settings."
+  },
+  "errEmptyFile": {
+    "message": "The file is empty: FileSender does not accept empty files."
+  },
+  "mgmtTermsTitle": {
+    "message": "Terms of use"
+  },
+  "mgmtAup": {
+    "message": "I accept the terms and conditions of this service"
+  },
+  "mgmtAupHint": {
+    "message": "You can read them on the upload page of the service:"
+  },
+  "mgmtAupRequired": {
+    "message": "You must accept the terms of use of the service."
+  },
+  "mgmtDefaultsTitle": {
+    "message": "FileSender default upload options"
+  },
+  "mgmtDays": {
+    "message": "Expires after"
+  },
+  "mgmtDaysOne": {
+    "message": "1 day"
+  },
+  "mgmtDaysValue": {
+    "message": "$N$ days",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "mgmtDaysHint": {
+    "message": "Maximum allowed by this instance: $N$ days.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "mgmtInstanceUnavailable": {
+    "message": "Cannot read the configuration of the instance: check the base URL."
+  },
+  "optEmailMeOnExpire": {
+    "message": "Notify me when it expires"
+  },
+  "optEmailUploadComplete": {
+    "message": "Notify me when the upload is complete"
+  },
+  "optEmailDownloadComplete": {
+    "message": "Notify me on download"
+  },
+  "optEmailReportOnClosing": {
+    "message": "Send me a report when it expires"
+  },
+  "optMustBeLoggedIn": {
+    "message": "Recipients must log in to FileSender to download the files"
+  },
+  "ntfReuploadChanged": {
+    "message": "$FILE$ has changed: the file is uploaded again.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      }
+    }
+  },
+  "ntfReuploadInvalid": {
+    "message": "The previous link for $FILE$ is no longer valid: the file is uploaded again.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      }
+    }
+  },
+  "ntfOptionsIgnored": {
+    "message": "FileSender did not apply some options for $FILE$: $LIST$.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      },
+      "list": {
+        "content": "$2"
+      }
+    }
+  },
+  "errEncryptionMandatory": {
+    "message": "This FileSender instance requires encryption: enable \"Ask for the upload options at every upload\" in the account settings."
+  },
+  "errEncryptionUnsupported": {
+    "message": "Encryption is not available on this FileSender instance."
+  },
+  "errPasswordInvalid": {
+    "message": "The password does not meet the requirements of this FileSender instance."
+  },
+  "mgmtBehaviourTitle": {
+    "message": "Behaviour"
+  },
+  "mgmtAskOptions": {
+    "message": "Ask for the upload options (expiry, notifications, encryption) at every upload"
+  },
+  "mgmtAskOptionsHint": {
+    "message": "A small window opens before each upload, prefilled with the options below. If disabled, uploads start immediately with these options and encryption is not available."
+  },
+  "optTitle": {
+    "message": "Upload with FileSender"
+  },
+  "optTransferTitle": {
+    "message": "Transfer settings"
+  },
+  "optEncryptionTitle": {
+    "message": "Encryption"
+  },
+  "optEncrypt": {
+    "message": "Encrypt the files with a password"
+  },
+  "optShow": {
+    "message": "Show"
+  },
+  "optGenerate": {
+    "message": "Generate"
+  },
+  "optCopy": {
+    "message": "Copy"
+  },
+  "optCopied": {
+    "message": "Copied"
+  },
+  "optPasswordWarning": {
+    "message": "Send the password to the recipients separately (not in this email). It is not saved anywhere and cannot be recovered."
+  },
+  "optCancel": {
+    "message": "Cancel"
+  },
+  "optUpload": {
+    "message": "Upload"
+  },
+  "optRuleLength": {
+    "message": "at least $N$ characters",
+    "placeholders": {
+      "n": {
+        "content": "$1"
+      }
+    }
+  },
+  "optRuleMixed": {
+    "message": "upper and lower case letters"
+  },
+  "optRuleNumbers": {
+    "message": "numbers"
+  },
+  "optRuleSpecial": {
+    "message": "symbols"
+  },
+  "optRuleAscii": {
+    "message": "no accented letters or emoji"
+  },
+  "optPwRules": {
+    "message": "Password requirements: $LIST$.",
+    "placeholders": {
+      "list": {
+        "content": "$1"
+      }
+    }
+  },
+  "optPwMissing": {
+    "message": "Missing: $LIST$.",
+    "placeholders": {
+      "list": {
+        "content": "$1"
+      }
+    }
+  },
+  "errFileExtension": {
+    "message": "The file extension $EXT$ is not allowed by this FileSender instance.",
+    "placeholders": {
+      "ext": {
+        "content": "$1",
+        "example": "exe"
+      }
+    }
+  },
+  "reuseTitle": {
+    "message": "Reuse the FileSender link?"
+  },
+  "reuseText": {
+    "message": "This file was already uploaded, but its link expires on $WHEN$, in less than 24 hours.",
+    "placeholders": {
+      "when": {
+        "content": "$1",
+        "example": "24/09/26, 10:00"
+      }
+    }
+  },
+  "reuseEncrypted": {
+    "message": "The link is encrypted: recipients need the same password as before."
+  },
+  "reuseReuse": {
+    "message": "Reuse the link"
+  },
+  "reuseReupload": {
+    "message": "Upload again"
+  },
+  "mgmtChecking": {
+    "message": "Checking the credentials…"
+  },
+  "mgmtCredentialsInvalid": {
+    "message": "FileSender rejected the credentials: check username and API key."
+  },
+  "mgmtTest": {
+    "message": "Test connection"
+  },
+  "mgmtTestOk": {
+    "message": "Connection OK: FileSender accepted the credentials."
+  },
+  "mgmtTestFailed": {
+    "message": "Cannot reach FileSender: $ERR$",
+    "placeholders": {
+      "err": {
+        "content": "$1",
+        "example": "NetworkError"
+      }
+    }
+  },
+  "errBadEmail": {
+    "message": "The sender email is not one of the emails of your FileSender account: fix it or leave it empty in the account settings."
+  },
+  "mgmtTestOkFilled": {
+    "message": "Connection OK. Default options were filled in from your FileSender profile: check them, accept the terms and save."
+  },
+  "reuseTextValid": {
+    "message": "This file was already uploaded with encryption; its link is valid until $WHEN$.",
+    "placeholders": {
+      "when": {
+        "content": "$1",
+        "example": "07/10/26, 10:00"
+      }
+    }
+  },
+  "cleanupNote": {
+    "message": "Files uploaded for an email are deleted from FileSender if you remove the attachment or close the email without sending it or saving it as a draft. Links that were reused, sent or saved are never deleted."
+  },
+  "mgmtDebug": {
+    "message": "Detailed logs in the console (debug)"
+  },
+  "mgmtDebugHint": {
+    "message": "Applies to all FileSender accounts. Tokens, signatures, keys and email addresses are always masked. Errors are logged anyway."
+  }
+}

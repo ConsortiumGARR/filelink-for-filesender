@@ -1,0 +1,71 @@
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 14px;
+}
+h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+.hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+.warn {
+  font-size: 12px;
+  color: #5c4400;
+  background: #fff4c2;
+  padding: 4px 6px;
+  border-radius: 3px;
+}
+.fname {
+  font-weight: 600;
+  word-break: break-all;
+}
+.ok {
+  color: #1a7f37;
+}
+.err {
+  color: #c62828;
+}
+label.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+label.check input {
+  margin-top: 2px;
+}
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+button {
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #888;
+  background: #eee;
+  cursor: pointer;
+}
+button:hover {
+  background: #e2e2e2;
+}
+button.primary {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

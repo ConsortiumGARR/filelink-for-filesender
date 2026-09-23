@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+
+  release:
+    name: Build and publish the xpi
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check that the tag matches the manifest version
+        run: |
+          set -eu
+          tag=${GITHUB_REF_NAME#v}
+          version=$(jq -r .version src/manifest.json)
+          if [ "$tag" != "$version" ]; then
+            echo "Tag v$tag does not match src/manifest.json version $version" >&2
+            exit 1
+          fi
+
+      - name: Build the xpi
+        run: sh tools/build.sh
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          gh release create "$GITHUB_REF_NAME" dist/*.xpi \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes

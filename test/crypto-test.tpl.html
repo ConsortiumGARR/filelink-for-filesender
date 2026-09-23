@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>fscrypto test</title>
+</head>
+<body>
+<div id="summary"></div>
+<ol id="results"></ol>
+<script id="vectors" type="application/json">__VECTORS__</script>
+<script>__LIB__</script>
+<script>
+(async function () {
+  const summary = document.getElementById('summary');
+  const results = document.getElementById('results');
+  let pass = 0;
+  let fail = 0;
+  function check(name, ok, detail) {
+    const li = document.createElement('li');
+    li.textContent = (ok ? 'PASS ' : 'FAIL ') + name + (ok || !detail ? '' : ' -- ' + detail);
+    results.appendChild(li);
+    if (ok) pass++; else fail++;
+  }
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function bytesToB64(bytes) {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  try {
+    const fc = globalThis.fscrypto;
+    const v = JSON.parse(document.getElementById('vectors').textContent);
+    const p = fc.newFileParams(v.ivLength, v.size, v.chunkSize, b64ToBytes(v.ivBytes));
+    check('iv', p.ivB64 === v.expectedIv, p.ivB64);
+    check('aead', p.aead === v.expectedAead, p.aead);
+    const key = await fc.deriveKey(v.password, v.salt, v.iterations);
+    for (const c of v.chunks) {
+      const out = await fc.encryptChunk(key, p.ivBytes, c.index, p.aead, b64ToBytes(c.plain));
+      const got = bytesToB64(out);
+      check('chunk ' + c.index, got === c.expected, got);
+    }
+    const rules = { minPasswordLength: 12, mixedCase: true, numbers: true, special: true,
+      generatedPasswordLength: 30 };
+    check('rules ok', fc.checkPassword('Abcdefgh123!', rules).length === 0);
+    check('rules short', fc.checkPassword('Ab1!', rules).includes('length'));
+    check('rules case', fc.checkPassword('abcdefgh123!', rules).includes('mixedCase'));
+    check('rules numbers', fc.checkPassword('Abcdefghijk!', rules).includes('numbers'));
+    check('rules special', fc.checkPassword('Abcdefgh1234', rules).includes('special'));
+    check('rules ascii', fc.checkPassword('Abcdefgh123!è', rules).includes('ascii'));
+    let genOk = true;
+    for (let i = 0; i < 50; i++) {
+      const g = fc.generatePassword(rules);
+      if (g.length !== 30 || fc.checkPassword(g, rules).length) { genOk = false; break; }
+    }
+    check('generated passwords', genOk);
+  } catch (err) {
+    check('exception', false, String(err && err.stack || err));
+  }
+  summary.textContent = (fail === 0 ? 'ALL PASS' : fail + ' FAILED') + '  (' + pass + '/' + (pass + fail) + ' passed)';
+})();
+</script>
+</body>
+</html>

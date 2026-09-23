@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="mgmtTitle"></title>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/management.css" />
+  </head>
+  <body>
+    <h2>FileSender</h2>
+    <p class="lead" data-i18n="mgmtLead"></p>
+    <form id="form" autocomplete="off">
+      <div class="row">
+        <label for="baseUrl" data-i18n="mgmtBaseUrl"></label>
+        <input
+          id="baseUrl"
+          name="baseUrl"
+          type="text"
+          placeholder="https://filesender.example.org"
+        />
+        <div class="hint" data-i18n="mgmtBaseUrlHint"></div>
+      </div>
+      <div class="row">
+        <label for="username" data-i18n="mgmtUsername"></label>
+        <input id="username" name="username" type="text" />
+        <div class="hint" data-i18n="mgmtUsernameHint"></div>
+      </div>
+      <div class="row">
+        <label for="apikey" data-i18n="mgmtApikey"></label>
+        <input id="apikey" name="apikey" type="password" placeholder="••••••••••••" />
+        <div class="hint" data-i18n="mgmtApikeyHint"></div>
+      </div>
+      <div class="row">
+        <label for="email" data-i18n="mgmtEmail"></label>
+        <input id="email" name="email" type="text" placeholder="name@example.org" />
+        <div class="hint" data-i18n="mgmtEmailHint"></div>
+      </div>
+      <div class="row testrow">
+        <button id="test" type="button" data-i18n="mgmtTest"></button>
+        <span id="testStatus"></span>
+      </div>
+      <h3 data-i18n="mgmtTermsTitle"></h3>
+      <label class="check"
+        ><input id="aup" type="checkbox" /> <span data-i18n="mgmtAup"></span
+      ></label>
+      <div class="hint">
+        <span data-i18n="mgmtAupHint"></span>
+        <a id="siteLink" href="#" target="_blank" rel="noopener"></a>
+      </div>
+
+      <h3 data-i18n="mgmtBehaviourTitle"></h3>
+      <label class="check"
+        ><input id="askOptions" type="checkbox" /> <span data-i18n="mgmtAskOptions"></span
+      ></label>
+      <div class="hint" data-i18n="mgmtAskOptionsHint"></div>
+      <p class="hint" data-i18n="cleanupNote"></p>
+      <label class="check"
+        ><input id="debug" type="checkbox" /> <span data-i18n="mgmtDebug"></span
+      ></label>
+      <div class="hint" data-i18n="mgmtDebugHint"></div>
+
+      <h3 data-i18n="mgmtDefaultsTitle"></h3>
+      <div class="row">
+        <label for="days" data-i18n="mgmtDays"></label>
+        <select id="days"></select>
+        <div class="hint" id="daysHint"></div>
+      </div>
+      <label class="check"
+        ><input type="checkbox" data-option="email_me_on_expire" />
+        <span data-i18n="optEmailMeOnExpire"></span
+      ></label>
+      <label class="check"
+        ><input type="checkbox" data-option="email_upload_complete" />
+        <span data-i18n="optEmailUploadComplete"></span
+      ></label>
+      <label class="check"
+        ><input type="checkbox" data-option="email_download_complete" />
+        <span data-i18n="optEmailDownloadComplete"></span
+      ></label>
+      <label class="check"
+        ><input type="checkbox" data-option="email_report_on_closing" />
+        <span data-i18n="optEmailReportOnClosing"></span
+      ></label>
+      <label class="check"
+        ><input type="checkbox" data-option="must_be_logged_in_to_download" />
+        <span data-i18n="optMustBeLoggedIn"></span
+      ></label>
+
+      <div class="actions">
+        <button type="submit" data-i18n="mgmtSave"></button>
+      </div>
+    </form>
+    <div id="status"></div>
+    <script src="../lib/ui-common.js"></script>
+    <script src="management.js"></script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+name: Test suite
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test/check.sh
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install system Python dependencies (gi, cryptography)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi gir1.2-javascriptcoregtk-4.1 python3-cryptography
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+
+      - name: Install black and ruff
+        run: |
+          uv sync --group dev
+          # Appended, not prepended (GITHUB_PATH would prepend): .venv/bin has its
+          # own python3, which must not shadow the system one gi is bound to.
+          echo "PATH=$PATH:$PWD/.venv/bin" >> "$GITHUB_ENV"
+
+      - name: Run the full test suite
+        run: sh test/check.sh
+
+  webext-linter:
+    name: Thunderbird webext-linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the xpi
+        run: sh tools/build.sh
+
+      - name: Install webext-linter
+        run: npm install --no-save github:thunderbird/webext-linter#main
+
+      - name: Lint the xpi against Thunderbird's ATN review policies
+        run: npx webext-linter dist/*.xpi

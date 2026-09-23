@@ -1,0 +1,23 @@
+# Tooling configuration only: not a Python package, no [build-system].
+[project]
+name = "filelink-for-filesender-dev-tools"
+version = "0"
+requires-python = ">=3.12"
+
+[dependency-groups]
+dev = ["black==26.5.1", "ruff==0.16.8"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+extend-exclude = "^/reference/"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = ["reference"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+# Long lines inside embedded JavaScript strings are expected; black handles code.
+ignore = ["E501"]
