@@ -71,7 +71,7 @@ and tooling live outside it.
   both call it instead of repeating it
 - `.github/workflows/checks.yml`: calls `test.yml` on push to `main`, on every pull
   request, and manually
-- `.github/workflows/release.yml`: on a `vX.Y.Z` tag, calls `test.yml`, then verifies
+- `.github/workflows/release.yml`: on an `X.Y.Z` tag, calls `test.yml`, then verifies
   the tag matches `src/manifest.json`'s version and publishes the built xpi as a GitHub
   release asset
 
@@ -382,4 +382,4 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 - `reference/filesender.py` is read-only ground truth. If behavior is wrong, fix the JS,
   not the reference.
 - `src/manifest.json`'s version follows semver; bump it whenever the release workflow
-  will be used, tagging `vX.Y.Z` to match.
+  will be used, tagging `X.Y.Z` to match.
