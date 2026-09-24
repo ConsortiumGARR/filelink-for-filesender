@@ -13,10 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install system Python dependencies (gi, cryptography)
+      - name: Install system Python dependencies (cryptography)
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-gi gir1.2-javascriptcoregtk-4.1 python3-cryptography
+          sudo apt-get install -y python3-cryptography
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -30,7 +30,8 @@ jobs:
         run: |
           uv sync --group dev
           # Appended, not prepended (GITHUB_PATH would prepend): .venv/bin has its
-          # own python3, which must not shadow the system one gi is bound to.
+          # own python3, which must not shadow the system one python3-cryptography
+          # is installed into.
           echo "PATH=$PATH:$PWD/.venv/bin" >> "$GITHUB_ENV"
 
       - name: Run the full test suite

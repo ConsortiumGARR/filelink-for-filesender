@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # Encryption reference: a copy of the filesender.py logic (generate_key,
 # encrypt_chunk_aesgcm, per-file iv/aead). Generates the vectors used by
-# test/crypto-test.html to check src/lib/fscrypto.js. Needs the `cryptography`
-# package. Derived from FileSender's filesender.py (BSD 3-Clause, see NOTICE.md).
+# test/crypto/crypto.test.js to check src/lib/fscrypto.js. Needs the
+# `cryptography` package. Derived from FileSender's filesender.py (BSD 3-Clause,
+# see NOTICE.md).
 import base64
 import hashlib
 from math import ceil

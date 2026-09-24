@@ -24,11 +24,11 @@ prettier() {
     mkdir -p "$cache"
     docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp -e npm_config_cache=/npm-cache \
       -e npm_config_update_notifier=false \
-      -v "$cache":/npm-cache -v "$PWD":/work -w /work node:22-alpine \
+      -v "$cache":/npm-cache -v "$PWD":/work -w /work node:24-alpine \
       npx --yes "$PRETTIER" "$@"
   else
     echo "prettier: skipped (neither npx nor docker available)"
   fi
 }
-prettier --log-level warn "$mode" 'src/**/*.{js,html,json,css}' || status=1
+prettier --log-level warn "$mode" 'src/**/*.{js,html,json,css}' 'test/**/*.js' || status=1
 exit $status

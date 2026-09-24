@@ -19,5 +19,3 @@ extend-exclude = ["reference"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
-# Long lines inside embedded JavaScript strings are expected; black handles code.
-ignore = ["E501"]

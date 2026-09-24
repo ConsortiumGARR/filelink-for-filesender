@@ -1,20 +1,15 @@
 #!/usr/bin/env python3
-# Static checks: JS syntax (parsed with JavaScriptCore), translations (same
-# keys in every locale, no missing or unused key, declared placeholders), valid
-# manifest JSON, and every file referenced by the manifest exists in src/.
-# Usage: python3 test/static_check.py
+# Static checks: translations (same keys in every locale, no missing or unused
+# key, declared placeholders), valid manifest JSON, and every file referenced by
+# the manifest exists in src/. JS syntax is checked separately, in
+# test/static/syntax.test.js (Node, no gi/JavaScriptCore needed here).
+# Usage: python3 test/static/static_check.py
 import glob
 import json
 import os
 import re
-import sys
 
-import gi
-
-gi.require_version("JavaScriptCore", "4.1")
-from gi.repository import JavaScriptCore as J  # noqa: E402
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 JS = sorted(
     os.path.relpath(p, ROOT)
     for p in glob.glob(os.path.join(ROOT, "src", "**", "*.js"), recursive=True)
@@ -31,13 +26,6 @@ def read(path):
     with open(os.path.join(ROOT, path), encoding="utf-8") as f:
         return f.read()
 
-
-for f in JS:
-    ctx = J.Context()
-    ctx.set_value("src", J.Value.new_string(ctx, read(f)))
-    r = ctx.evaluate("try{new Function(src);'ok'}catch(e){String(e)}", -1).to_string()
-    if r != "ok":
-        problems.append(f"syntax {f}: {r}")
 
 manifest = json.loads(read("src/manifest.json"))
 locales = {}
@@ -78,9 +66,9 @@ background = "".join(read("src/" + s) for s in manifest["background"]["scripts"]
 referenced += re.findall(r"openPopup\(\s*'([\w./-]+\.html)", background)
 referenced += re.findall(r"service_icon: '([\w./-]+)'", background)
 for page in HTML:
-    base = os.path.dirname(os.path.relpath(page, "src"))
+    base_dir = os.path.dirname(os.path.relpath(page, "src"))
     for ref in re.findall(r'(?:src|href)="([\w./-]+\.(?:js|css))"', read(page)):
-        referenced.append(os.path.normpath(os.path.join(base, ref)))
+        referenced.append(os.path.normpath(os.path.join(base_dir, ref)))
 for f in referenced:
     if not os.path.exists(os.path.join(ROOT, "src", f)):
         problems.append(f"missing file referenced from the extension: src/{f}")
@@ -88,4 +76,4 @@ for f in referenced:
 for p in problems:
     print("FAIL", p)
 print("RESULT:", "ALL PASS" if not problems else f"{len(problems)} FAILED")
-sys.exit(1 if problems else 0)
+raise SystemExit(1 if problems else 0)

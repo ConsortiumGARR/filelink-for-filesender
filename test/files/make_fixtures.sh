@@ -1,8 +1,8 @@
 #!/bin/sh
 # Generates the big fixtures in test/files/ (ignored by git) and prints their
-# sha256, to compare with downloaded files. Usage: sh test/make_fixtures.sh
+# sha256, to compare with downloaded files. Usage: sh test/files/make_fixtures.sh
 set -eu
-cd "$(dirname "$0")/files"
+cd "$(dirname "$0")"
 chunk=5242880
 head -c "$chunk" /dev/urandom > ok-5MB-exact.bin
 head -c $((chunk + 1)) /dev/urandom > ok-5MB-plus-1-byte.bin
