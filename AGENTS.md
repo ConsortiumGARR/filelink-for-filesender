@@ -48,8 +48,8 @@ and tooling live outside it.
 - `src/css/`: `common.css` (shared) + one stylesheet per page
 - `src/_locales/`: UI strings and error messages (en default, it)
 - `src/icons/`: PNG icons derived from the FileSender logo (BSD-3, `src/icons/LICENSE`),
-  rendered by `tools/icons.sh` from `icons/filesender.svg` (16 px, plain folder) and
-  `icons/filesender-mail.svg` (32 px and up, envelope badge)
+  rendered by `tools/icons.sh` from `icons/filesender-mail.svg` (envelope badge, all
+  sizes)
 - `docs/TESTING.md`: manual + automated test plan
 - `docs/ATN_REVIEW_NOTES.md`: notes for addons.thunderbird.net reviewers
 - `test/`: automated tests; `sh test/check.sh` runs them all

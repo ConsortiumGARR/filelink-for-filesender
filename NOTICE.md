@@ -4,9 +4,9 @@ Some parts of this project are derived from FileSender
 (<https://github.com/filesender/filesender>), released under the BSD 3-Clause
 license:
 
-- `icons/filesender.svg`, `icons/filesender-mail.svg` and `src/icons/`: the
-  yellow folder cropped from `www/images/filesender-logo.svg`; the envelope
-  badge is original to this project.
+- `icons/filesender-mail.svg` and `src/icons/`: the yellow folder cropped from
+  `www/images/filesender-logo.svg`; the envelope badge is original to this
+  project.
 - `src/lib/filesender.js` and `src/lib/fscrypto.js`: the REST request signing
   and the encryption are rewritten in JavaScript following the official client
   `reference/filesender.py`.
