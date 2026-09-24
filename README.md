@@ -8,6 +8,12 @@ A Thunderbird add-on that attaches large files to your emails as
 [FileSender](https://filesender.org) download links instead of attaching them directly.
 It works with any FileSender instance you have an account on.
 
+<p align="center">
+  <a href="https://addons.thunderbird.net/en-US/thunderbird/addon/filelink-for-filesender/">
+    <img src="docs/images/get-the-addon.svg" alt="Get the add-on for Thunderbird">
+  </a>
+</p>
+
 ## What it does
 
 - Adds "FileSender" as a FileLink provider in the attachment menu.
@@ -38,8 +44,13 @@ Use those two values, plus the instance's base URL, in the add-on's settings (se
 
 ## Installation
 
-Thunderbird does not require add-ons to be signed, so the `.xpi` can be installed
-permanently without going through addons.thunderbird.net:
+**From addons.thunderbird.net (recommended)**: install directly from the
+[FileLink for FileSender](https://addons.thunderbird.net/en-US/thunderbird/addon/filelink-for-filesender/)
+listing; Thunderbird then handles updates automatically.
+
+**From a downloaded `.xpi`**: Thunderbird does not require add-ons to be signed, so the
+`.xpi` can also be installed permanently without going through addons.thunderbird.net,
+at the cost of updating it by hand:
 
 1. Download `filelink-for-filesender-<version>.xpi` from the
    [releases page](https://github.com/ConsortiumGARR/filelink-for-filesender/releases).

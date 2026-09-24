@@ -51,3 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <https://github.com/thunderbird/webext-support/tree/master/ai>, released under the
 Mozilla Public License 2.0 (<https://www.mozilla.org/MPL/2.0/>); not included in the
 `.xpi` package.
+
+`docs/images/get-the-addon.svg` is copied from
+<https://github.com/thunderbird/webext-support/blob/master/images/get-the-addon.svg>,
+same license; not included in the `.xpi` package.
