@@ -9,13 +9,13 @@
     "message": "FileSender"
   },
   "errNotConfigured": {
-    "message": "FileSender non è configurato: apri le impostazioni dell'account e inserisci URL base, username e API key."
+    "message": "FileSender non è configurato: apri le impostazioni dell'account e inserisci URL base, identificatore e API key."
   },
   "errInsecureUrl": {
     "message": "FileSender è configurato con un indirizzo http:// non sicuro: apri le impostazioni dell'account e usa https://."
   },
   "errAuth": {
-    "message": "Autenticazione FileSender fallita: controlla username e API key nelle impostazioni dell'account."
+    "message": "Autenticazione FileSender fallita: controlla identificatore e API key nelle impostazioni dell'account."
   },
   "errTooLarge": {
     "message": "Il file supera la dimensione massima consentita da questa istanza FileSender."
@@ -48,10 +48,10 @@
     "message": "L'indirizzo della tua istanza FileSender. Se manca, /rest.php viene aggiunto automaticamente."
   },
   "mgmtUsername": {
-    "message": "Username"
+    "message": "Identificatore"
   },
   "mgmtUsernameHint": {
-    "message": "Il valore \"username\" nel file filesender.py.ini scaricabile dal tuo profilo FileSender. Spesso non è la tua email."
+    "message": "Il campo \"Identificatore\" mostrato nel pannello Informazioni account del tuo profilo FileSender. Spesso non è la tua email."
   },
   "mgmtEmail": {
     "message": "Email mittente"
@@ -63,7 +63,7 @@
     "message": "API key"
   },
   "mgmtApikeyHint": {
-    "message": "L'\"API secret\" nella pagina del tuo profilo FileSender."
+    "message": "L'\"API secret\" mostrato nella sezione Autenticazione remota del tuo profilo FileSender."
   },
   "mgmtSave": {
     "message": "Salva"
@@ -72,7 +72,7 @@
     "message": "Id account non valido."
   },
   "mgmtRequired": {
-    "message": "Compila URL base, username e API key."
+    "message": "Compila URL base, identificatore e API key."
   },
   "mgmtInvalidEmail": {
     "message": "Inserisci un indirizzo email mittente valido."
@@ -303,7 +303,7 @@
     "message": "Verifica delle credenziali in corso…"
   },
   "mgmtCredentialsInvalid": {
-    "message": "FileSender ha rifiutato le credenziali: controlla username e API key."
+    "message": "FileSender ha rifiutato le credenziali: controlla identificatore e API key."
   },
   "mgmtTest": {
     "message": "Verifica connessione"

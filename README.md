@@ -25,18 +25,16 @@ It works with any FileSender instance you have an account on.
 
 ## Getting your FileSender credentials
 
-The add-on needs three values: the instance's base URL, your username and your API key.
-FileSender can hand you all three in one file:
+The add-on needs three values: the instance's base URL, your identifier and your API
+key. Find the last two on your FileSender instance's own account settings page:
 
-1. On your FileSender instance, open `/?s=user` (or find "My Account" / "Profile" in the
-   menu) and scroll to the bottom, "Remote authentication".
-2. Click "Download the Python client configuration".
-3. Open the downloaded `filesender.py.ini`: it has a `[system]` section with `base_url`,
-   and a `[user]` section with `username` and `apikey`. Use those three values in the
-   add-on's settings (see "Configuration" below).
+1. Open `/?s=user` (or find "Account settings" in the menu).
+2. Top right, "Account information": the "Identifier" field. It is often not your email
+   address.
+3. Bottom left, "Remote authentication": the "API secret" field.
 
-Your username here is your FileSender identifier for signing requests (`remote_user`);
-it is often not your email address.
+Use those two values, plus the instance's base URL, in the add-on's settings (see
+"Configuration" below).
 
 ## Installation
 
@@ -78,8 +76,8 @@ repeat these steps with the new `.xpi`.
      <img src="docs/images/account-settings.png" alt="Account settings page" width="480">
    </p>
 
-3. Fill in the base URL, username and API key from "Getting your FileSender credentials"
-   above; optionally a sender email. Click "Test connection".
+3. Fill in the base URL, identifier and API key from "Getting your FileSender
+   credentials" above; optionally a sender email. Click "Test connection".
 4. Tick the terms of use, adjust the default upload options if you want, and save.
 
 ## Usage
@@ -96,9 +94,9 @@ repeat these steps with the new `.xpi`.
 
 - **"FileSender is not configured"**: the settings were not saved, or a field is
   missing.
-- **`auth_remote_signature_check_failed`**: wrong username or API key (FileSender gives
-  the same error for both). Re-download the `filesender.py.ini` file above and compare
-  it with the saved settings.
+- **`auth_remote_signature_check_failed`**: wrong identifier or API key (FileSender gives
+  the same error for both). Re-check the "Account information" and "Remote
+  authentication" sections above and compare them with the saved settings.
 - **Access to all websites permission**: FileSender sends no CORS headers, so the add-on
   needs a broad host permission to reach any self-hosted instance. Requests only ever go
   to the instance you configured.

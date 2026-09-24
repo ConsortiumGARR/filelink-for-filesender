@@ -43,7 +43,7 @@ Each item: what to do -> what to expect. The log line to look for is in parenthe
 
 ### A. Account settings
 
-- A1. Open the account -> fields in this order: Base URL, Username, API key, Sender
+- A1. Open the account -> fields in this order: Base URL, Identifier, API key, Sender
   email, "Test connection"; then the sections Terms of use, Behaviour, FileSender
   default upload options. The expiry list goes up to the instance maximum, with "Maximum
   allowed by this instance: N days".
@@ -56,7 +56,7 @@ Each item: what to do -> what to expect. The log line to look for is in parenthe
   warning disappears; reopen -> values kept.
 - A5. New account: the terms checkbox stays empty even after "Test connection"; without
   ticking it by hand the save is refused.
-- A6. Wrong API key (or username), "Test connection" -> "FileSender rejected the
+- A6. Wrong API key (or identifier), "Test connection" -> "FileSender rejected the
   credentials". Unreachable URL -> "Cannot reach FileSender". Restore the right values
   and save.
 - A7. Empty sender email -> upload ok, sender = account primary email (`from (account

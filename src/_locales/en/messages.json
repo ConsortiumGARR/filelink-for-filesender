@@ -9,13 +9,13 @@
     "message": "FileSender"
   },
   "errNotConfigured": {
-    "message": "FileSender is not configured: open the account settings and enter base URL, username and API key."
+    "message": "FileSender is not configured: open the account settings and enter base URL, identifier and API key."
   },
   "errInsecureUrl": {
     "message": "FileSender is configured with an insecure http:// address: open the account settings and use https://."
   },
   "errAuth": {
-    "message": "FileSender authentication failed: check username and API key in the account settings."
+    "message": "FileSender authentication failed: check identifier and API key in the account settings."
   },
   "errTooLarge": {
     "message": "The file exceeds the maximum size allowed by this FileSender instance."
@@ -48,10 +48,10 @@
     "message": "The address of your FileSender instance. /rest.php is appended automatically if missing."
   },
   "mgmtUsername": {
-    "message": "Username"
+    "message": "Identifier"
   },
   "mgmtUsernameHint": {
-    "message": "The \"username\" value in the filesender.py.ini file you can download from your FileSender profile. It is often not your email address."
+    "message": "The \"Identifier\" field shown in the Account information panel of your FileSender profile. It is often not your email address."
   },
   "mgmtEmail": {
     "message": "Sender email"
@@ -63,7 +63,7 @@
     "message": "API key"
   },
   "mgmtApikeyHint": {
-    "message": "The \"API secret\" shown on your FileSender profile page."
+    "message": "The \"API secret\" shown in the Remote authentication section of your FileSender profile."
   },
   "mgmtSave": {
     "message": "Save"
@@ -72,7 +72,7 @@
     "message": "Invalid account id."
   },
   "mgmtRequired": {
-    "message": "Fill in base URL, username and API key."
+    "message": "Fill in base URL, identifier and API key."
   },
   "mgmtInvalidEmail": {
     "message": "Enter a valid sender email address."
@@ -303,7 +303,7 @@
     "message": "Checking the credentials…"
   },
   "mgmtCredentialsInvalid": {
-    "message": "FileSender rejected the credentials: check username and API key."
+    "message": "FileSender rejected the credentials: check identifier and API key."
   },
   "mgmtTest": {
     "message": "Test connection"
