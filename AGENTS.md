@@ -66,6 +66,12 @@ and tooling live outside it.
 - `.markdownlint.jsonc`: editor-only markdownlint rules for the docs (not run in CI)
 - `reference/filesender.py`: upstream FileSender CLI client (BSD-3); the source of truth
   for signing, NOT shipped in the xpi
+- `reference/thunderbird-webextensions-skill.md`: upstream AI-agent guidance for
+  Thunderbird WebExtension development, from
+  <https://github.com/thunderbird/webext-support/tree/master/ai>, NOT shipped in the
+  xpi. Read it before touching any `browser.*`/`cloudFile.*` API usage or adding a new
+  one: never guess a WebExtension API's name or parameters, Thunderbird's are ONLY at
+  <https://webextension-api.thunderbird.net/en/mv3/>, and differ from Firefox's
 - `README.md`: install / usage documentation
 - `TRANSLATIONS.md`: locales and how to add one
 - `NOTICE.md`: third-party notices (FileSender BSD-3 parts), in the xpi
@@ -420,5 +426,9 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 - Code stays light on comments (match the existing style).
 - `reference/filesender.py` is read-only ground truth. If behavior is wrong, fix the JS,
   not the reference.
+- `reference/thunderbird-webextensions-skill.md` is upstream, read-only: update it only
+  by re-downloading a newer version from
+  <https://github.com/thunderbird/webext-support/tree/master/ai>, never by hand-editing
+  it.
 - `src/manifest.json`'s version follows semver; bump it whenever the release workflow
   will be used, tagging `X.Y.Z` to match.

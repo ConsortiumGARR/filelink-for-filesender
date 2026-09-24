@@ -90,6 +90,50 @@ repeat these steps with the new `.xpi`.
 4. To reuse a file you already sent, pick it again from the attach menu; a new upload
    starts only if the previous link is no longer valid.
 
+## Development
+
+### Normal development
+
+Everything is plain JS/HTML/CSS/JSON, no bundler or transpiler; edit files under `src/`
+directly, then build and reload as below. General background on Thunderbird add-ons:
+<https://developer.thunderbird.net/add-ons/about-add-ons>.
+
+### Build
+
+`sh tools/build.sh` zips `src/` into `dist/*.xpi`. While developing, load it as a
+temporary add-on instead of installing it: Add-ons and Themes -> gear menu -> "Debug
+Add-ons" -> "Load Temporary Add-on" -> pick the `.xpi`. That gives you "Inspect"
+(console, "Persist Logs") on the running extension; loading `src/manifest.json`
+directly does not work.
+
+### Internationalization
+
+UI strings live in `src/_locales/<language>/messages.json` (English is the default,
+Italian is also available); never hardcode UI text in JS or HTML. See
+[TRANSLATIONS.md](TRANSLATIONS.md) for how to add a language.
+
+### Tests
+
+`sh test/check.sh` runs everything (static checks, signing, encryption, request
+retries, background logic, formatting). The JS tests run on Node: a local `node` is
+used if present, otherwise a disposable `node:24-alpine` container, so nothing needs
+installing either way. See [docs/TESTING.md](docs/TESTING.md) for the full plan,
+including manual testing in Thunderbird.
+
+### Formatting
+
+`sh tools/format.sh` (black + ruff for Python, Prettier for the extension's
+JS/HTML/JSON/CSS); `sh tools/format.sh --check` only verifies.
+
+### AI-assisted development
+
+[AGENTS.md](AGENTS.md) is the authoritative guide for AI coding agents working in this
+repo. For anything touching a Thunderbird `browser.*` API, also read
+[reference/thunderbird-webextensions-skill.md](reference/thunderbird-webextensions-skill.md)
+first (mirrored from
+<https://github.com/thunderbird/webext-support/tree/master/ai>); never guess a
+Thunderbird API's name or parameters.
+
 ## Troubleshooting
 
 - **"FileSender is not configured"**: the settings were not saved, or a field is

@@ -12,8 +12,8 @@ license:
   `reference/filesender.py`.
 - `reference/filesender.py`: copy of the official client, not included in the
   `.xpi` package.
-- `test/reference.py` and `test/crypto_reference.py`: copies of the
-  `filesender.py` logic used to generate test vectors.
+- `test/signing/reference.py` and `test/crypto/crypto_reference.py`: copies of
+  the `filesender.py` logic used to generate test vectors.
 
 License text:
 
@@ -46,3 +46,8 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+`reference/thunderbird-webextensions-skill.md` is copied from
+<https://github.com/thunderbird/webext-support/tree/master/ai>, released under the
+Mozilla Public License 2.0 (<https://www.mozilla.org/MPL/2.0/>); not included in the
+`.xpi` package.
