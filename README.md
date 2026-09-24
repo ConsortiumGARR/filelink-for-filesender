@@ -54,7 +54,7 @@ at the cost of updating it by hand:
 
 1. Download `filelink-for-filesender-<version>.xpi` from the
    [releases page](https://github.com/ConsortiumGARR/filelink-for-filesender/releases).
-2. In Thunderbird, open "Add-ons and Themes" (Ctrl+Shift+A).
+2. In Thunderbird, open "Add-ons and Themes".
 3. Gear menu (top right) -> "Install Add-on From File..." and pick the `.xpi` file.
 4. Accept the permissions prompt:
 
