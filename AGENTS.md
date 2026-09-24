@@ -119,9 +119,10 @@ and tooling live outside it.
   (`.prettierrc.json`: single quotes, 100 columns, trailing commas). Markdown is not
   formatted by Prettier: docs are wrapped by hand at 88 columns (tables excepted).
 - `.markdownlint.jsonc` sets `MD013` to 88 columns (tables exempt, matching the hand
-  wrapping above) and lets `MD033` allow `<p>`/`<img>` for the README's centered logo.
-  It is not run anywhere; it only makes an editor's markdownlint extension agree with
-  our conventions.
+  wrapping above) and lets `MD033` allow `<p>`/`<img>` for the README's centered logo
+  and `<details>`/`<summary>` for its collapsible screenshots section. It is not run
+  anywhere; it only makes an editor's markdownlint extension agree with our
+  conventions.
 - `sh tools/format.sh` formats everything, `--check` only verifies (also run by `sh
   test/check.sh`). Prettier uses a local `npx` if present, otherwise a Docker
   `node:24-alpine` container, since Node is not installed here.

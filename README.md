@@ -154,3 +154,32 @@ Thunderbird API's name or parameters.
   then "Inspect" the add-on from "Add-ons and Themes" and open its Console (enable
   "Persist Logs"). API keys, tokens, signatures and email addresses are always masked,
   so logs can be pasted into a bug report.
+
+## Screenshots
+
+<details>
+<summary>Show screenshots</summary>
+
+<p align="center">
+  <img src="docs/images/providers-list.png" alt="FileSender listed as a FileLink provider" width="480">
+</p>
+
+Settings -> Composition -> "Attachments": FileSender added as a FileLink provider.
+
+<p align="center">
+  <img src="docs/images/provider-account-settings.png" alt="FileSender account settings" width="480">
+</p>
+
+Selecting it opens its account settings: base URL, identifier and API key.
+
+<p align="center">
+  <img src="docs/images/attach-full-window.png" alt="Attach menu in the compose window" width="480">
+</p>
+
+<p align="center">
+  <img src="docs/images/attach-menu.png" alt="FileLink submenu with FileSender" width="380">
+</p>
+
+In a new mail: Attach -> FileLink -> FileSender.
+
+</details>
