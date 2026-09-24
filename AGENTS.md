@@ -52,6 +52,8 @@ and tooling live outside it.
   sizes)
 - `docs/TESTING.md`: manual + automated test plan
 - `docs/ATN_REVIEW_NOTES.md`: notes for addons.thunderbird.net reviewers
+- `docs/PRIVACY_POLICY.md`: full text for the ATN listing's Privacy Policy field
+- `docs/RELEASING.md`: how to cut a release and submit it to ATN, first time and updates
 - `test/`: automated tests; `sh test/check.sh` runs them all
 - `test/files/`: manual upload fixtures; the big ones (`ok-*.bin`, sparse
   `too-large-200GiB.bin`) come from `test/make_fixtures.sh`

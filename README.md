@@ -125,6 +125,12 @@ including manual testing in Thunderbird.
 `sh tools/format.sh` (black + ruff for Python, Prettier for the extension's
 JS/HTML/JSON/CSS); `sh tools/format.sh --check` only verifies.
 
+### Releasing
+
+See [docs/RELEASING.md](docs/RELEASING.md) for cutting a release (GitHub Releases,
+already automated) and submitting it to addons.thunderbird.net, both the first time and
+for later updates.
+
 ### AI-assisted development
 
 [AGENTS.md](AGENTS.md) is the authoritative guide for AI coding agents working in this
