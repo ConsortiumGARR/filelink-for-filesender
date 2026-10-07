@@ -81,7 +81,10 @@ and tooling live outside it.
 - `.github/workflows/test.yml`: reusable (`workflow_call`); `sh test/check.sh`,
   `webext-linter`, and static analysis (Semgrep on the code, zizmor on `.github/`). The
   only place the test steps are written; checks.yml and release.yml both call it
-  instead of repeating it
+  instead of repeating it. Its job names (`test / <job name>`) are the required status
+  checks of the "Protect main" ruleset in the repo settings: renaming a job means
+  updating the ruleset too, or pull requests wait forever for a check that never runs;
+  a new job is not required until it is added there
 - `.github/workflows/checks.yml`: calls `test.yml` on push to `main`, on every pull
   request, and manually
 - `.github/workflows/release.yml`: on an `X.Y.Z` tag, calls `test.yml`, then verifies
