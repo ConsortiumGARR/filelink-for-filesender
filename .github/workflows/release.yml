@@ -4,9 +4,13 @@ on:
   push:
     tags: ["*.*.*"]
 
+permissions: {}
+
 jobs:
   test:
-    uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
+    uses: $/.github/workflows/test.yml
 
   release:
     name: Build and publish the xpi
@@ -15,7 +19,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Check that the tag matches the manifest version
         run: |

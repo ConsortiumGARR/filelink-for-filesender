@@ -61,9 +61,10 @@ and tooling live outside it.
 - `tools/auth_check.py`: read-only credential check from the terminal
 - `tools/icons.sh`: regenerates src/icons/*.png from icons/*.svg (ImageMagick)
 - `tools/format.sh`: black + ruff (Python), Prettier (JS/HTML/JSON/CSS)
-- `pyproject.toml`: formatter settings, plus `[dependency-groups] dev` pinning black and
-  ruff, the single source CI and `uv run --group dev <tool>` install from
-- `uv.lock`: exact resolved versions for that dev group; commit it, don't hand-edit it
+- `pyproject.toml`: formatter settings, plus `[dependency-groups]`: `dev` pins black and
+  ruff, `security` pins Semgrep and zizmor; the single source CI and `uv run --group
+  <group> <tool>` install from
+- `uv.lock`: exact resolved versions for those groups; commit it, don't hand-edit it
 - `.prettierrc.json`, `.prettierignore`: Prettier settings
 - `.markdownlint.jsonc`: editor-only markdownlint rules for the docs (not run in CI)
 - `reference/filesender.py`: upstream FileSender CLI client (BSD-3); the source of truth
@@ -77,14 +78,17 @@ and tooling live outside it.
 - `README.md`: install / usage documentation
 - `TRANSLATIONS.md`: locales and how to add one
 - `NOTICE.md`: third-party notices (FileSender BSD-3 parts), in the xpi
-- `.github/workflows/test.yml`: reusable (`workflow_call`); `sh test/check.sh` plus
-  `webext-linter`. The only place the test steps are written; checks.yml and release.yml
-  both call it instead of repeating it
+- `.github/workflows/test.yml`: reusable (`workflow_call`); `sh test/check.sh`,
+  `webext-linter`, and static analysis (Semgrep on the code, zizmor on `.github/`). The
+  only place the test steps are written; checks.yml and release.yml both call it
+  instead of repeating it
 - `.github/workflows/checks.yml`: calls `test.yml` on push to `main`, on every pull
   request, and manually
 - `.github/workflows/release.yml`: on an `X.Y.Z` tag, calls `test.yml`, then verifies
   the tag matches `src/manifest.json`'s version and publishes the built xpi as a GitHub
   release asset
+- `.github/dependabot.yml`: weekly grouped updates for the GitHub Actions and the `uv`
+  tool pins, with a 7-day cooldown on new releases
 
 ## Tech / build
 
@@ -174,6 +178,14 @@ them, so a test can never run against a stale copy left over from a previous
   closed, abort while pending, bad password, ignored options, credential check, cleanup
   of unsent mails, redaction, window centering. Add a step to `scenarios.js` when you
   add a branch.
+- Static analysis runs in CI only (`static-analysis` job in `test.yml`), since Semgrep
+  downloads its rulesets: Semgrep with `p/javascript`, `p/python` and `p/secrets`, and
+  zizmor on the workflows and the Dependabot config. Both fail the build on any
+  finding. Locally: `uv run --group security semgrep scan --error --metrics=off --config
+  p/javascript --config p/python --config p/secrets --exclude reference` and `uv run
+  --group security zizmor .github`. Actions are pinned by full commit SHA with the
+  version in a comment; a deliberate exception gets an inline `# zizmor: ignore[...]`
+  with the reason next to it.
 - A live test needs a real Thunderbird plus a FileSender API key and username. The
   manual plan is `docs/TESTING.md`.
 - The local Thunderbird is a flatpak: it only sees the single file picked in the file

@@ -131,6 +131,9 @@ used if present, otherwise a disposable `node:24-alpine` container, so nothing n
 installing either way. See [docs/TESTING.md](docs/TESTING.md) for the full plan,
 including manual testing in Thunderbird.
 
+CI also runs Thunderbird's webext-linter on the built `.xpi`, Semgrep on the code and
+zizmor on the GitHub Actions workflows. Any finding fails the build.
+
 ### Formatting
 
 `sh tools/format.sh` (black + ruff for Python, Prettier for the extension's

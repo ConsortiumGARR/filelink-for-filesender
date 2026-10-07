@@ -11,7 +11,10 @@ jobs:
     name: test/check.sh
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - &checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install system Python dependencies (cryptography)
         run: |
@@ -19,12 +22,13 @@ jobs:
           sudo apt-get install -y python3-cryptography
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v10.2.0
+      - &setup-uv
+        name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
 
       - name: Install black and ruff
         run: |
@@ -41,13 +45,36 @@ jobs:
     name: Thunderbird webext-linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - *checkout
 
       - name: Build the xpi
         run: sh tools/build.sh
 
+      # webext-linter publishes no tags or releases
       - name: Install webext-linter
-        run: npm install --no-save github:thunderbird/webext-linter#main
+        run: npm install --no-save github:thunderbird/webext-linter#main # zizmor: ignore[adhoc-packages]
 
       - name: Lint the xpi against Thunderbird's ATN review policies
         run: npx webext-linter dist/*.xpi
+
+  static-analysis:
+    name: Static analysis (Semgrep, zizmor)
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+
+      - *setup-uv
+
+      - name: Install Semgrep and zizmor
+        run: uv sync --only-group security
+
+      - name: Semgrep
+        run: >-
+          uv run --no-sync semgrep scan --error --metrics=off
+          --config p/javascript --config p/python --config p/secrets
+          --exclude reference
+
+      - name: zizmor (GitHub Actions workflows and Dependabot config)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run --no-sync zizmor .github
