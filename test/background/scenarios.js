@@ -67,7 +67,10 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: false, size: 10 };
-  start('e', file(5, 'e.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('e', file(5, 'e.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   check(
@@ -84,7 +87,7 @@ step(function () {
   start(
     'f',
     file(6, 'f.txt'),
-    { url: 'https://fs/?s=download&token=old', dataChanged: false },
+    { url: 'https://fs.example.org/?s=download&token=old', dataChanged: false },
     { windowId: 3 },
   );
 });
@@ -96,7 +99,7 @@ step(function () {
     S.lastCreate.left === 360 && S.lastCreate.top === 320,
     S.lastCreate,
   );
-  msg({ type: 'reuse-init', fileId: '6' }).then(function (r) {
+  msg({ type: 'reuse-init', accountId: 'acc1', fileId: '6' }).then(function (r) {
     S.rinit = r;
   });
 });
@@ -106,7 +109,7 @@ step(function () {
     S.rinit && S.rinit.ok && S.rinit.info.name === 'f.txt' && S.rinit.info.when,
     S.rinit,
   );
-  msg({ type: 'reuse-answer', fileId: '6', answer: 'reupload' });
+  msg({ type: 'reuse-answer', accountId: 'acc1', fileId: '6', answer: 'reupload' });
 });
 step(function () {});
 step(function () {
@@ -121,10 +124,13 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = { transferId: 9, expires: NOW + 3600, encrypted: true, size: 10 };
-  start('g', file(7, 'g.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('g', file(7, 'g.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
-  msg({ type: 'reuse-answer', fileId: '7', answer: 'reuse' });
+  msg({ type: 'reuse-answer', accountId: 'acc1', fileId: '7', answer: 'reuse' });
 });
 step(function () {});
 step(function () {
@@ -142,7 +148,10 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = { transferId: 9, expires: NOW + 3600, encrypted: false, size: 10 };
-  start('g2', file(71, 'g2.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('g2', file(71, 'g2.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   S.removedListeners.forEach(function (fn) {
@@ -161,11 +170,14 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: true, size: 10 };
-  start('g3', file(72, 'g3.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('g3', file(72, 'g3.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   check('long encrypted -> question', S.windows === 1 && !S.results.g3, [S.windows, S.results]);
-  msg({ type: 'reuse-init', fileId: '72' }).then(function (r) {
+  msg({ type: 'reuse-init', accountId: 'acc1', fileId: '72' }).then(function (r) {
     S.rinit = r;
   });
 });
@@ -175,7 +187,7 @@ step(function () {
     S.rinit.info.short === false && S.rinit.info.encrypted === true,
     S.rinit,
   );
-  msg({ type: 'reuse-answer', fileId: '72', answer: 'reuse' });
+  msg({ type: 'reuse-answer', accountId: 'acc1', fileId: '72', answer: 'reuse' });
 });
 step(function () {});
 step(function () {
@@ -206,7 +218,10 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = new Error('transfer_not_found');
-  start('h', file(8, 'h.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('h', file(8, 'h.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   check(
@@ -222,7 +237,10 @@ step(function () {
 step(function () {
   reset(baseConfig());
   S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: false, size: 99 };
-  start('h2', file(9, 'h2.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('h2', file(9, 'h2.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   check(
@@ -359,7 +377,7 @@ step(function () {
   start(
     'p8',
     file(88, 'p7.txt'),
-    { url: 'https://fs/?s=download&token=new-p7.txt', dataChanged: false },
+    { url: 'https://fs.example.org/?s=download&token=new-p7.txt', dataChanged: false },
     { id: 12, windowId: 1 },
   );
 });
@@ -390,7 +408,7 @@ step(function () {
   start(
     'p9',
     file(89, 'old.txt'),
-    { url: 'https://fs/?s=download&token=old', dataChanged: false },
+    { url: 'https://fs.example.org/?s=download&token=old', dataChanged: false },
     { id: 13, windowId: 1 },
   );
 });
@@ -569,7 +587,10 @@ step(function () {
 step(function () {
   reset(baseConfig({ askOptions: true }));
   S.link = new Error('gone');
-  start('n', file(18, 'n.txt'), { url: 'https://fs/?s=download&token=old', dataChanged: false });
+  start('n', file(18, 'n.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old',
+    dataChanged: false,
+  });
 });
 step(function () {
   msg({ type: 'options-init', accountId: 'acc1' }).then(function (r) {
@@ -672,5 +693,254 @@ step(function () {
     'insecure credential check refused',
     S.cc3 && S.cc3.ok === false && S.cc3.error === 'errInsecureUrl',
     S.cc3,
+  );
+});
+
+// 15. two FileSender accounts: Thunderbird numbers uploads per account, so both
+// accounts' files can have the same id at the same time
+function twoAccounts(extra) {
+  reset(baseConfig(extra));
+  S.configs = {
+    acc1: baseConfig(extra),
+    acc2: baseConfig(Object.assign({ baseUrl: 'https://other.example.net/rest.php' }, extra)),
+  };
+}
+
+// 15a. attachment removed on one account -> only that account's transfer deleted
+step(function () {
+  twoAccounts();
+  S.session = {};
+  S.deleted = [];
+  startOn('acc1', 't1', file(1, 't1.txt'), undefined, { id: 20, windowId: 1 });
+  startOn('acc2', 't2', file(1, 't2.txt'), undefined, { id: 20, windowId: 1 });
+});
+step(function () {});
+step(function () {
+  S.listeners.fileDeleted({ id: 'acc1' }, 1);
+});
+step(function () {});
+step(function () {
+  check(
+    'same id, two accounts: removal deletes only its own transfer',
+    JSON.stringify(S.deleted) === '["T-t1.txt"]',
+    S.deleted,
+  );
+  S.listeners.tabRemoved(20);
+});
+step(function () {});
+step(function () {
+  check(
+    'same id, two accounts: the other transfer goes with its mail',
+    JSON.stringify(S.deleted) === '["T-t1.txt","T-t2.txt"]',
+    S.deleted,
+  );
+});
+
+// 15b. abort while uploading -> only that account's upload is stopped
+step(function () {
+  twoAccounts();
+  S.hold = true;
+  startOn('acc1', 'u1', file(2, 'u1.txt'));
+  startOn('acc2', 'u2', file(2, 'u2.txt'));
+});
+step(function () {
+  S.listeners.abort({ id: 'acc1' }, 2);
+});
+step(function () {
+  var h1 = S.held.find(function (h) {
+    return h.name === 'u1.txt';
+  });
+  var h2 = S.held.find(function (h) {
+    return h.name === 'u2.txt';
+  });
+  check(
+    'same id, two accounts: abort stops only its own upload',
+    h1 && h2 && h1.signal.aborted === true && h2.signal.aborted === false,
+    [h1 && h1.signal, h2 && h2.signal],
+  );
+  S.held.forEach(function (h) {
+    h.release();
+  });
+});
+step(function () {});
+step(function () {
+  check('held uploads completed', S.results.u1 && S.results.u2, S.results);
+});
+
+// 15c. abort in the options windows -> only that account's file leaves its batch
+step(function () {
+  twoAccounts({ askOptions: true });
+  startOn('acc1', 'v1', file(3, 'v1.txt'));
+  startOn('acc2', 'v2', file(3, 'v2.txt'));
+});
+step(function () {
+  check('one options window per account', S.windows === 2, S.windows);
+  S.listeners.abort({ id: 'acc2' }, 3);
+});
+step(function () {
+  check(
+    'same id, two accounts: abort removes only its own file',
+    S.results.v2 && S.results.v2.aborted && !S.results.v1,
+    S.results,
+  );
+  msg({ type: 'options-submit', accountId: 'acc1', choice: { days: 3, options: {} } });
+});
+step(function () {});
+step(function () {
+  check(
+    'same id, two accounts: the other file still uploads',
+    S.results.v1 && S.results.v1.url && S.uploads.length === 1 && S.uploads[0].name === 'v1.txt',
+    [S.results, S.uploads],
+  );
+});
+
+// 15d. reuse questions -> each answer reaches its own account
+step(function () {
+  twoAccounts();
+  S.link = { transferId: 9, expires: NOW + 3600, encrypted: false, size: 10 };
+  startOn('acc1', 'w1', file(4, 'w1.txt'), {
+    url: 'https://fs.example.org/?s=download&token=old1',
+    dataChanged: false,
+  });
+  startOn('acc2', 'w2', file(4, 'w2.txt'), {
+    url: 'https://other.example.net/?s=download&token=old2',
+    dataChanged: false,
+  });
+});
+step(function () {});
+step(function () {
+  check('one question per account', S.windows === 2, S.windows);
+  msg({ type: 'reuse-init', accountId: 'acc1', fileId: '4' }).then(function (r) {
+    S.rinit1 = r;
+  });
+  msg({ type: 'reuse-init', accountId: 'acc2', fileId: '4' }).then(function (r) {
+    S.rinit2 = r;
+  });
+});
+step(function () {
+  check(
+    'same id, two accounts: each question shows its own file',
+    S.rinit1 && S.rinit1.info.name === 'w1.txt' && S.rinit2 && S.rinit2.info.name === 'w2.txt',
+    [S.rinit1, S.rinit2],
+  );
+  msg({ type: 'reuse-answer', accountId: 'acc2', fileId: '4', answer: 'reuse' });
+});
+step(function () {});
+step(function () {
+  check(
+    'same id, two accounts: answer reaches its own question',
+    S.results.w2 && S.results.w2.url.indexOf('token=old2') > 0 && !S.results.w1,
+    S.results,
+  );
+  msg({ type: 'reuse-answer', accountId: 'acc1', fileId: '4', answer: 'reupload' });
+});
+step(function () {});
+step(function () {
+  check(
+    'same id, two accounts: the other question answered too',
+    S.results.w1 && S.results.w1.url.indexOf('token=new-w1.txt') > 0,
+    S.results.w1,
+  );
+});
+
+// 16. a link of another server is never looked up on this one (its token would be
+// sent there): new upload, and the reason says the link is not on the base URL
+step(function () {
+  reset(baseConfig());
+  S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: false, size: 10 };
+  start('x', file(30, 'x.txt'), {
+    url: 'https://other.example.net/?s=download&token=foreign',
+    dataChanged: false,
+  });
+});
+step(function () {
+  check(
+    'link of another server -> not looked up, new upload',
+    S.linkCalls.length === 0 &&
+      S.uploads.length === 1 &&
+      S.results.x.url.indexOf('foreign') < 0 &&
+      S.notes.length === 1 &&
+      S.notes[0].indexOf('ntfReuploadAddress') === 0,
+    [S.linkCalls, S.results.x, S.notes],
+  );
+});
+
+// 16b. base URL on an alias host name, while the server declares another site_url:
+// only the base URL of the settings counts, so the links on site_url are not looked up
+step(function () {
+  reset(baseConfig({ baseUrl: 'https://alias.example.org/rest.php' }));
+  S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: false, size: 10 };
+  start('x2', file(31, 'x2.txt'), {
+    url: 'https://fs.example.org/?s=download&token=mine',
+    dataChanged: false,
+  });
+});
+step(function () {
+  check(
+    'base url on an alias host -> declared site_url not trusted, new upload',
+    S.linkCalls.length === 0 &&
+      S.uploads.length === 1 &&
+      S.notes.length === 1 &&
+      S.notes[0].indexOf('ntfReuploadAddress') === 0,
+    [S.linkCalls, S.results.x2, S.notes],
+  );
+});
+
+// 16c. same host, another path (another instance on the same server): not looked up
+step(function () {
+  reset(baseConfig());
+  S.link = { transferId: 9, expires: NOW + 5 * 86400, encrypted: false, size: 10 };
+  start('x3', file(32, 'x3.txt'), {
+    url: 'https://fs.example.org/other/?s=download&token=foreign',
+    dataChanged: false,
+  });
+});
+step(function () {
+  check(
+    'link of another path on the same host -> not looked up',
+    S.linkCalls.length === 0 && S.uploads.length === 1,
+    [S.linkCalls, S.results.x3],
+  );
+});
+
+// 16d. the settings page warns when the site_url declared by the server differs from
+// the base URL entered there
+step(function () {
+  var a = globalThis.fsAccount;
+  var warns = function (declared, base) {
+    return !a.sameSite(declared, a.siteUrlOf(base));
+  };
+  check(
+    'site_url warning',
+    !warns('https://fs.example.org/', 'fs.example.org') &&
+      !warns('https://fs.example.org/', 'https://FS.example.org/rest.php') &&
+      !warns('https://fs.example.org/filesender/', 'fs.example.org/filesender/') &&
+      warns('https://fs.example.org/', 'alias.example.org') &&
+      warns('https://fs.example.org/filesender/', 'fs.example.org'),
+  );
+});
+
+// 17. instance configuration over http:// refused without fetching it
+step(function () {
+  reset(baseConfig());
+  msg({ type: 'instance-config', baseUrl: 'http://fs.example.org' }).then(function (r) {
+    S.ic = r;
+  });
+});
+step(function () {
+  check('insecure instance config refused', S.ic && S.ic.ok === false && S.instanceCalls === 0, [
+    S.ic,
+    S.instanceCalls,
+  ]);
+});
+
+// 18. an upper-case scheme is normalized: the signature covers the host without it
+step(function () {
+  var a = globalThis.fsAccount;
+  check(
+    'scheme lower-cased',
+    a.normalizeBaseUrl('HTTPS://FS.example.org/') === 'https://FS.example.org/rest.php' &&
+      a.isInsecureUrl(a.normalizeBaseUrl('HTTP://fs.example.org')),
+    a.normalizeBaseUrl('HTTPS://FS.example.org/'),
   );
 });

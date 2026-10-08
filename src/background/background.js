@@ -8,6 +8,12 @@ const acct = globalThis.fsAccount;
 
 const activeUploads = new Map();
 
+// Thunderbird numbers uploads per account: a file id alone is not unique when
+// more than one FileSender account is configured.
+function uploadKey(accountId, fileId) {
+  return accountId + ':' + fileId;
+}
+
 const t = (key, ...subs) => browser.i18n.getMessage(key, subs);
 
 const OPTION_LABELS = {
@@ -41,6 +47,7 @@ const instanceCache = new Map();
 
 async function instanceConfig(baseUrl) {
   baseUrl = acct.normalizeBaseUrl(baseUrl);
+  if (acct.isInsecureUrl(baseUrl)) throw new Error(t('errInsecureUrl'));
   const hit = instanceCache.get(baseUrl);
   if (hit && Date.now() - hit.at < INSTANCE_TTL_MS) return hit.cfg;
   const cfg = await fs.getInstanceConfig({ baseUrl });
@@ -225,6 +232,11 @@ function uploadResult(cfg, url, expires, encrypted) {
 
 async function evaluateRelated(fsAccount, related, size) {
   if (related.dataChanged) return { action: 'upload', reason: 'changed' };
+  // Only the base URL of the settings says which links belong to this server, never the
+  // server itself: the token of another server's link must not be sent to it.
+  if (!acct.sameSite(related.url, acct.siteUrlOf(fsAccount.baseUrl))) {
+    return { action: 'upload', reason: 'address' };
+  }
   let st = null;
   try {
     st = await fs.getLinkStatus(fsAccount, related.url);
@@ -251,6 +263,7 @@ async function evaluateRelated(fsAccount, related, size) {
 function reasonText(ev, name) {
   if (!ev || !ev.reason) return null;
   if (ev.reason === 'changed') return t('ntfReuploadChanged', name);
+  if (ev.reason === 'address') return t('ntfReuploadAddress', name);
   return t('ntfReuploadInvalid', name);
 }
 
@@ -275,6 +288,8 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
     fileInfo.data.size + 'B',
     'account',
     account.id,
+    'id',
+    fileInfo.id,
     related ? 'related ' + related.url + ' dataChanged ' + related.dataChanged : '',
   );
   const cfg = await loadConfig(account.id);
@@ -324,7 +339,8 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
   }
 
   const controller = new AbortController();
-  activeUploads.set(fileInfo.id, controller);
+  const key = uploadKey(account.id, fileInfo.id);
+  activeUploads.set(key, controller);
   updateKeepAlive();
   const fsAccount = {
     baseUrl: cfg.baseUrl,
@@ -341,6 +357,7 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
       ev = await evaluateRelated(fsAccount, related, fileInfo.data.size);
       if (ev.action === 'ask' || (ev.action === 'reuse' && ev.st.encrypted)) {
         const answer = await askReuse(
+          account.id,
           fileInfo.id,
           {
             name,
@@ -358,7 +375,7 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
       }
       if (ev.action === 'reuse') {
         log('reusing link', related.url);
-        await trackHolder(related.url, fileInfo.id, tab);
+        await trackHolder(related.url, account.id, fileInfo.id, tab);
         return uploadResult(cfg, related.url, ev.st.expires, ev.st.encrypted);
       }
     }
@@ -439,15 +456,16 @@ browser.cloudFile.onFileUpload.addListener(async (account, fileInfo, tab, relate
     warn('upload error', errText(e), String((e && e.stack) || ''));
     return errorResult(e);
   } finally {
-    activeUploads.delete(fileInfo.id);
+    activeUploads.delete(key);
     updateKeepAlive();
   }
 });
 
 browser.cloudFile.onFileUploadAbort.addListener(async (account, fileId) => {
-  log('onFileUploadAbort', fileId);
-  if (cancelPending(fileId)) log('removed from options window', fileId);
-  if (answerReuse(fileId, null)) log('reuse question closed', fileId);
-  const c = activeUploads.get(fileId);
+  log('onFileUploadAbort', fileId, 'account', account.id);
+  const key = uploadKey(account.id, fileId);
+  if (cancelPending(account.id, fileId)) log('removed from options window', fileId);
+  if (answerReuse(key, null)) log('reuse question closed', fileId);
+  const c = activeUploads.get(key);
   if (c) c.abort();
 });

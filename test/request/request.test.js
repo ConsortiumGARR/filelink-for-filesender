@@ -39,17 +39,19 @@ function abortSignal(s) {
   s.listeners.forEach((fn) => fn());
 }
 
-const F = { queue: [], calls: 0 };
-function resp(status, body, headers) {
+const F = { queue: [], calls: 0, init: null };
+function resp(status, body, headers, type) {
   return {
     ok: status >= 200 && status < 300,
     status,
+    type: type || 'basic',
     headers: { get: (k) => (headers || {})[k] || null },
     text: () => Promise.resolve(body || ''),
   };
 }
-globalThis.fetch = () => {
+globalThis.fetch = (url, init) => {
   F.calls++;
+  F.init = init;
   const next = F.queue.shift();
   if (!next) return Promise.reject(new Error('no more responses'));
   if (next.error) {
@@ -57,7 +59,7 @@ globalThis.fetch = () => {
     e.name = next.error;
     return Promise.reject(e);
   }
-  return Promise.resolve(resp(next.status, next.body, next.headers));
+  return Promise.resolve(resp(next.status, next.body, next.headers, next.type));
 };
 
 require(path.join(__dirname, '..', '..', 'src', 'lib', 'filesender.js'));
@@ -171,4 +173,50 @@ test('Retry-After is capped at 30s', async () => {
   flushTimers();
   await p;
   assert.equal(T.delays[0], 30000);
+});
+
+test('a redirect is never followed nor retried', async () => {
+  for (const r of [{ status: 0, type: 'opaqueredirect' }, { status: 302 }]) {
+    reset([r, { status: 200, body: '{}' }]);
+    const p = fs.request(acc, {
+      method: 'put',
+      path: '/file/1/chunk/0',
+      data: {},
+      rawContent: new Uint8Array(3),
+    });
+    await assert.rejects(p, (e) => /redirect not followed/.test(e.message));
+    assert.equal(F.init.redirect, 'manual');
+    assert.equal(F.calls, 1);
+    assert.equal(T.delays.length, 0);
+  }
+});
+
+test('only a FileSender error code reaches the error message', async () => {
+  const bodies = [
+    '<html><body><h1>502 Bad Gateway</h1></body></html>',
+    '{"message":"Your API key expired, enter it again at https://example.net"}',
+  ];
+  for (const body of bodies) {
+    reset([{ status: 500, body }]);
+    const p = fs.request(acc, { method: 'get', path: '/x', data: {} });
+    await assert.rejects(p, (e) => e.message === 'FileSender HTTP 500' && e.code === '');
+  }
+});
+
+test('a download url without an http(s) scheme is ignored', () => {
+  const t = (url) => ({ recipients: [{ download_url: url }] });
+  assert.equal(fs.pickDownloadUrl(t('data:text/html,x')), null);
+  assert.equal(
+    fs.pickDownloadUrl(t('https://fs.example.org/?s=download&token=a')),
+    'https://fs.example.org/?s=download&token=a',
+  );
+});
+
+test('site_url is read from the instance configuration', () => {
+  const text = [
+    "    terasender_upload_endpoint: 'https://fs.example.org/rest.php/file/{file_id}/chunk/{offset}',",
+    "    streamsaver_mitm_url: 'https://fs.example.org/lib/streamsaver/mitm.html',",
+    "    site_url: 'https://fs.example.org/',",
+  ].join('\n');
+  assert.equal(fs.parseInstanceConfig(text).siteUrl, 'https://fs.example.org/');
 });

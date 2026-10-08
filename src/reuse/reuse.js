@@ -1,12 +1,14 @@
 'use strict';
 
-const fileId = new URL(location.href).searchParams.get('fileId');
+const params = new URL(location.href).searchParams;
+const accountId = params.get('accountId');
+const fileId = params.get('fileId');
 const t = globalThis.uiCommon.t;
 globalThis.uiCommon.localize();
 
 function answer(value) {
   browser.runtime
-    .sendMessage({ type: 'reuse-answer', fileId, answer: value })
+    .sendMessage({ type: 'reuse-answer', accountId, fileId, answer: value })
     .finally(() => window.close());
 }
 
@@ -14,7 +16,7 @@ document.getElementById('cancel').addEventListener('click', () => answer(null));
 document.getElementById('reuse').addEventListener('click', () => answer('reuse'));
 document.getElementById('reupload').addEventListener('click', () => answer('reupload'));
 
-browser.runtime.sendMessage({ type: 'reuse-init', fileId }).then((init) => {
+browser.runtime.sendMessage({ type: 'reuse-init', accountId, fileId }).then((init) => {
   if (!init || !init.ok) {
     window.close();
     return;

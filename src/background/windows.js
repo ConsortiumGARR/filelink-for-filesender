@@ -81,40 +81,47 @@ function requestOptions(accountId, cfg, inst, item, tab) {
   });
 }
 
-function cancelPending(fileId) {
-  for (const b of batches.values()) {
-    const item = b.items.get(fileId);
-    if (!item) continue;
-    b.items.delete(fileId);
-    item.resolve(null);
-    if (b.items.size === 0) closeBatch(b, null);
-    else pushBatch(b);
-    return true;
-  }
-  return false;
+function cancelPending(accountId, fileId) {
+  const b = batches.get(accountId);
+  const item = b && b.items.get(fileId);
+  if (!item) return false;
+  b.items.delete(fileId);
+  item.resolve(null);
+  if (b.items.size === 0) closeBatch(b, null);
+  else pushBatch(b);
+  return true;
 }
 
-function askReuse(fileId, info, tab) {
+function askReuse(accountId, fileId, info, tab) {
+  const key = uploadKey(accountId, fileId);
   return new Promise((resolve) => {
     const p = { info, resolve, winId: null };
-    prompts.set(fileId, p);
+    prompts.set(key, p);
     updateKeepAlive();
-    openPopup('reuse/reuse.html?fileId=' + encodeURIComponent(fileId), 480, 260, tab)
+    openPopup(
+      'reuse/reuse.html?accountId=' +
+        encodeURIComponent(accountId) +
+        '&fileId=' +
+        encodeURIComponent(fileId),
+      480,
+      260,
+      tab,
+    )
       .then((win) => {
         p.winId = win.id;
-        if (prompts.get(fileId) !== p) browser.windows.remove(win.id).catch(() => {});
+        if (prompts.get(key) !== p) browser.windows.remove(win.id).catch(() => {});
       })
       .catch((e) => {
         warn('reuse window failed', errText(e));
-        answerReuse(fileId, null);
+        answerReuse(key, null);
       });
   });
 }
 
-function answerReuse(fileId, answer) {
-  const p = prompts.get(fileId);
+function answerReuse(key, answer) {
+  const p = prompts.get(key);
   if (!p) return false;
-  prompts.delete(fileId);
+  prompts.delete(key);
   if (p.winId != null) browser.windows.remove(p.winId).catch(() => {});
   p.resolve(answer);
   updateKeepAlive();
@@ -122,10 +129,10 @@ function answerReuse(fileId, answer) {
 }
 
 browser.windows.onRemoved.addListener((winId) => {
-  for (const [fileId, p] of prompts) {
+  for (const [key, p] of prompts) {
     if (p.winId === winId) {
       p.winId = null;
-      answerReuse(fileId, null);
+      answerReuse(key, null);
     }
   }
   for (const b of batches.values()) {
@@ -140,13 +147,13 @@ browser.windows.onRemoved.addListener((winId) => {
 browser.runtime.onMessage.addListener((msg) => {
   if (!msg || typeof msg.type !== 'string') return false;
   if (msg.type === 'reuse-init') {
-    const p = prompts.get(Number(msg.fileId));
+    const p = prompts.get(uploadKey(msg.accountId, msg.fileId));
     return Promise.resolve(p ? { ok: true, info: p.info } : { ok: false });
   }
   if (msg.type === 'reuse-answer') {
     const answer = msg.answer === 'reuse' || msg.answer === 'reupload' ? msg.answer : null;
     log('reuse answer', answer);
-    answerReuse(Number(msg.fileId), answer);
+    answerReuse(uploadKey(msg.accountId, msg.fileId), answer);
     return Promise.resolve({ ok: true });
   }
   const b = batches.get(msg.accountId);

@@ -179,8 +179,9 @@ them, so a test can never run against a stale copy left over from a previous
   rely on (see Layout above). Scenarios: direct upload, terms, empty, too large, bad
   name, reuse long/short/invalid/changed/encrypted, options batch, cancel, window
   closed, abort while pending, bad password, ignored options, credential check, cleanup
-  of unsent mails, redaction, window centering. Add a step to `scenarios.js` when you
-  add a branch.
+  of unsent mails, redaction, window centering, two accounts with the same file id,
+  link of another server or path, base URL alias, site_url warning, insecure instance
+  config, scheme case. Add a step to `scenarios.js` when you add a branch.
 - Static analysis runs in CI only (`static-analysis` job in `test.yml`), since Semgrep
   downloads its rulesets: Semgrep with `p/javascript`, `p/python` and `p/secrets`, and
   zizmor on the workflows and the Dependabot config. Both fail the build on any
@@ -221,7 +222,8 @@ This is the core invariant; the differential tests exist to pin it down. Do not
   NOT there on 3.x); its `Date` header is the server clock used for `expires`.
 - `GET <site>/filesender-config.js.php` -- UNSIGNED, parsed with regexes in
   `fs.parseInstanceConfig` (like filesender.py): default/max days, max_transfer_size,
-  file name rules, encryption params, password rules. Cached 1h in the background
+  file name rules, encryption params, password rules, and site_url (only for the
+  settings page warning, see Account settings page). Cached 1h in the background
   (`instanceConfig`); the settings page asks for it via the runtime message
   `{type:'instance-config', baseUrl}`. `max_transfer_size` is pushed to Thunderbird with
   `cloudFile.updateAccount({uploadSizeLimit})`.
@@ -252,16 +254,27 @@ This is the core invariant; the differential tests exist to pin it down. Do not
   is abortable.
 - FileSender answers 500 for every application error (auth, size, validation): never
   retry 500. A user abort always surfaces as AbortError.
+- Signed requests never follow redirects (`redirect: 'manual'`, then an error): the
+  signature covers host and path, so a redirect cannot succeed, and following it would
+  send the body (a file chunk) to its target.
+- An error message carries only the FileSender error code of the response
+  (`[\w.-]{1,100}`), never free server text: it is shown in a Thunderbird dialog.
 
 ## Account settings page
 
 - The page only has a limited API set (cloudFile, extension, i18n, runtime, storage).
   Get the account id with `new URL(location.href).searchParams.get('accountId')`.
 - `http://` base URLs are rejected, both on save (`management.js`) and, defense in
-  depth, before every upload and every "Test connection" call in `background.js`
-  (`fsAccount.isInsecureUrl`, `errInsecureUrl`/`mgmtInsecureUrl`): the API key and the
-  file content would otherwise travel in clear text. A scheme-less input is still
-  upgraded to `https://` by `normalizeBaseUrl`; only an explicit `http://` is refused.
+  depth, before every upload, every "Test connection" call and every instance
+  configuration fetch in `background.js` (`fsAccount.isInsecureUrl`,
+  `errInsecureUrl`/`mgmtInsecureUrl`): the API key and the file content would otherwise
+  travel in clear text. A scheme-less input is still upgraded to `https://` by
+  `normalizeBaseUrl`; only an explicit `http://` is refused. `normalizeBaseUrl` also
+  lower-cases the scheme: the signature covers the base URL with `https://` removed.
+- When the instance config declares a `site_url` other than the base URL without
+  `rest.php` (e.g. a base URL on an alias host name), the page shows a warning
+  (`mgmtSiteUrlMismatch`) with the declared address: its links would never be reused.
+  The declared address is never used for anything else.
 - Account record in `storage.local[accountId]`: `{baseUrl, username, email, apikey, aup,
   askOptions, defaults: {days, options: {email_me_on_expire, email_upload_complete,
   email_download_complete, email_report_on_closing, must_be_logged_in_to_download}}}`.
@@ -320,6 +333,11 @@ This is the core invariant; the differential tests exist to pin it down. Do not
   controllers, pending windows) lives in memory.
 - Thunderbird calls onFileUpload once per attachment, concurrently: one transfer per
   file; do not batch files into a single transfer.
+- Upload ids are numbered per account (`_nextId` in each `CloudFileAccount`): with two
+  FileSender accounts the same `fileId` exists twice at once. Every per-upload state
+  (abort controllers, reuse questions, options batches, cleanup holders) is keyed by
+  account id + file id (`uploadKey`), and `onFileUploadAbort` / `onFileDeleted` match
+  both.
 - Transfers are "get a link" (`get_a_link: 1`, no recipients): one public link,
   FileSender sends no email, the extension never reads the mail.
 
@@ -328,6 +346,12 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 - `reuse_uploads` is false: with true, Thunderbird reuses a previous upload (the attach
   menu list) without calling the extension and without checking expiry. With false,
   Thunderbird calls onFileUpload with `relatedFileInfo` ({url, dataChanged, ...}).
+- Only the base URL of the settings says which links belong to the account, never the
+  server: a `relatedFileInfo.url` whose origin and path differ from the base URL without
+  `rest.php` is never looked up (its token would be sent to another server). New upload,
+  with reason "address" (`ntfReuploadAddress`, pointing to the account settings). This
+  happens after the base URL of an account changes, or with a base URL on an alias host
+  name: FileSender builds every download link as `site_url?s=download&token=...`.
 - `fs.getLinkStatus` resolves the download token via signed `GET
   /transfer/fileidsextended?token=` -> transferid and file size, then `GET
   /transfer/{id}` -> `expires.raw` and `options.encryption`.
@@ -388,8 +412,8 @@ This is the core invariant; the differential tests exist to pin it down. Do not
   never when a compose window is closed, and not at all once a draft was saved (it marks
   uploads immutable on send AND save).
 - So every transfer WE created is tracked in `storage.session` (`tracked`): `{url:
-  {accountId, transferId, puid, holders: [{fileId, tabId}]}}`. Reuse of a tracked url
-  adds a holder; untracked (older or sent) links are never deleted.
+  {accountId, transferId, puid, holders: [{accountId, fileId, tabId}]}}`. Reuse of a
+  tracked url adds a holder; untracked (older or sent) links are never deleted.
 - `compose.onAfterSend` (no error) / `onAfterSave` -> drop the tab's entries (kept).
   `tabs.onRemoved` -> drop that tab's holders; a transfer with no holders left is
   deleted. `onBeforeSend` marks the tab `sending`: if the tab closes before
@@ -416,7 +440,8 @@ This is the core invariant; the differential tests exist to pin it down. Do not
 
 ## Abort
 
-- An in-memory `Map<fileId, AbortController>` in `src/background/background.js`.
+- An in-memory `Map<uploadKey(accountId, fileId), AbortController>` in
+  `src/background/background.js`.
 - `onFileUploadAbort` aborts it, removes the file from a pending options window and
   closes a pending reuse question; the signal is threaded into fetch via
   `account.signal`; on AbortError return `{aborted:true}`.

@@ -45,15 +45,15 @@ function trackCreated(url, accountId, transferId, puid, fileId, tab) {
       transferId,
       puid,
       kept: false,
-      holders: [{ fileId, tabId: tabIdOf(tab) }],
+      holders: [{ accountId, fileId, tabId: tabIdOf(tab) }],
     };
   });
 }
 
-function trackHolder(url, fileId, tab) {
+function trackHolder(url, accountId, fileId, tab) {
   return withTrack((state) => {
     const tr = state.transfers[url];
-    if (tr && !tr.kept) tr.holders.push({ fileId, tabId: tabIdOf(tab) });
+    if (tr && !tr.kept) tr.holders.push({ accountId, fileId, tabId: tabIdOf(tab) });
   });
 }
 
@@ -93,8 +93,10 @@ async function deleteTracked(tr) {
 }
 
 browser.cloudFile.onFileDeleted.addListener((account, fileId) => {
-  log('onFileDeleted', fileId);
-  return withTrack((state, toDelete) => dropHolders(state, toDelete, (h) => h.fileId === fileId));
+  log('onFileDeleted', fileId, 'account', account.id);
+  return withTrack((state, toDelete) =>
+    dropHolders(state, toDelete, (h) => h.accountId === account.id && h.fileId === fileId),
+  );
 });
 
 browser.compose.onBeforeSend.addListener((tab) => {

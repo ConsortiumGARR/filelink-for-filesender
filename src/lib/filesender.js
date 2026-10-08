@@ -192,6 +192,7 @@
           method: String(opts.method).toUpperCase(),
           headers,
           body: signed.body,
+          redirect: 'manual',
           signal: withTimeout(userSignal, timeoutMs),
         });
         text = await resp.text();
@@ -206,6 +207,12 @@
           continue;
         }
         break;
+      }
+
+      // The signature covers host and path, so a redirect can never succeed, and
+      // following one would send the request body (a file chunk) to its target.
+      if (resp.type === 'opaqueredirect' || (resp.status >= 300 && resp.status < 400)) {
+        throw new Error('FileSender: redirect not followed');
       }
 
       if (resp.ok) {
@@ -223,11 +230,14 @@
       } catch (e) {
         /* keep text */
       }
+      // Only a FileSender error code is shown to the user, never free server text
+      // (a proxy's HTML page, or a message written to mislead).
+      msg = typeof msg === 'string' && /^[\w.-]{1,100}$/.test(msg.trim()) ? msg.trim() : '';
       const isAuth =
         resp.status === 401 ||
         resp.status === 403 ||
         /auth_remote_(signature_check_failed|user_rejected)/.test(text);
-      const err = new Error('FileSender HTTP ' + resp.status + ': ' + msg);
+      const err = new Error('FileSender HTTP ' + resp.status + (msg ? ': ' + msg : ''));
       err.status = resp.status;
       err.code = msg;
       err.auth = isAuth;
@@ -270,6 +280,7 @@
     };
     return {
       siteName: str('site_name'),
+      siteUrl: str('site_url'),
       defaultDays: num('default_transfer_days_valid'),
       maxDays: num('max_transfer_days_valid'),
       maxTransferSize: num('max_transfer_size'),
@@ -400,7 +411,9 @@
 
   function pickDownloadUrl(transfer) {
     const list = (transfer && transfer.recipients) || [];
-    const r = list.find((x) => x.download_url);
+    const r = list.find(
+      (x) => typeof x.download_url === 'string' && /^https?:\/\//i.test(x.download_url),
+    );
     return r ? r.download_url : null;
   }
 

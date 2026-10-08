@@ -12,6 +12,8 @@
   function normalizeBaseUrl(u) {
     u = (u || '').trim().replace(/\/+$/, '');
     if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    // The signature covers the base URL without its scheme, removed in lower case.
+    u = u.replace(/^https?:/i, (s) => s.toLowerCase());
     if (!/\/rest\.php$/i.test(u)) u += '/rest.php';
     return u;
   }
@@ -20,5 +22,21 @@
     return /^http:\/\//i.test(String(baseUrl || '').trim());
   }
 
-  global.fsAccount = { DEFAULT_OPTIONS, normalizeBaseUrl, isInsecureUrl };
+  // FileSender builds every download link as site_url + '?s=download&token=...', and
+  // in a standard installation site_url is the base URL without rest.php.
+  function siteUrlOf(baseUrl) {
+    return normalizeBaseUrl(baseUrl).replace(/rest\.php$/i, '');
+  }
+
+  function sameSite(url, siteUrl) {
+    try {
+      const a = new URL(url);
+      const b = new URL(siteUrl);
+      return a.origin === b.origin && a.pathname === b.pathname;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  global.fsAccount = { DEFAULT_OPTIONS, normalizeBaseUrl, isInsecureUrl, siteUrlOf, sameSite };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -137,6 +137,10 @@ appear.
   Thunderbird does not pass the previous link.
 - E6. Change the file on disk (e.g. `echo x >> file`) and pick it again from the menu ->
   reason "has changed", new upload.
+- E7. If the instance answers on another host name than its `site_url` (an alias), use
+  that alias as base URL -> the settings page shows a warning with the declared address;
+  repeat E1 -> new upload with "is not on the base URL of this account". Put the
+  declared address as base URL and repeat E1 -> same link, no upload.
 
 ### F. Abort and robustness
 
@@ -182,3 +186,22 @@ With debug logs on, the console shows `deleting transfer of a mail not sent` or
   menu and in the FileLink box of the mail.
 - H2. Debug off -> only errors in the console. Debug on -> every step; the API key, full
   tokens, full signatures or plain email addresses never appear.
+
+### I. Two FileSender accounts
+
+Add a second FileSender account (another instance, or the same one with another API
+key). Thunderbird numbers the uploads of each account from 1 at every start, so restart
+it before I1 and in each item upload one file per account: the two files then have the
+same id (`onFileUpload ... account <id> id <n>`).
+
+- I1. In one mail attach a file with each account, then remove the attachment of the
+  first one -> only its transfer is deleted, the link of the second still downloads.
+  Close the mail without sending -> the second transfer is deleted too.
+- I2. With the options window on, attach a file with each account -> two windows; abort
+  the attachment of the second account from the attachment pane -> only that window
+  closes; Upload in the other one -> link ok.
+- I3. Attach a big file with each account, abort the upload of the first one -> only
+  that one stops (`upload aborted`), the other completes.
+- I4. Change the base URL of an account to another instance, then pick from its attach
+  menu a file uploaded before the change -> new upload with "no longer valid", and no
+  `previous link` line in the log (the old token is not sent to the new instance).

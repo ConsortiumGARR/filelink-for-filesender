@@ -47,6 +47,15 @@
   "mgmtBaseUrlHint": {
     "message": "L'indirizzo della tua istanza FileSender. Se manca, /rest.php viene aggiunto automaticamente."
   },
+  "mgmtSiteUrlMismatch": {
+    "message": "Attenzione: questo FileSender dichiara come proprio indirizzo $SITE$, diverso dall'URL base inserito qui. I suoi link di download sono su $SITE$, quindi un file allegato di nuovo dal menu Filelink viene ricaricato invece di riusarne il link. Usa $SITE$ come URL base, se lo ritieni opportuno.",
+    "placeholders": {
+      "site": {
+        "content": "$1",
+        "example": "https://filesender.example.org/"
+      }
+    }
+  },
   "mgmtUsername": {
     "message": "Identificatore"
   },
@@ -165,6 +174,14 @@
   },
   "ntfReuploadInvalid": {
     "message": "Il link precedente di $FILE$ non è più valido: il file viene ricaricato.",
+    "placeholders": {
+      "file": {
+        "content": "$1"
+      }
+    }
+  },
+  "ntfReuploadAddress": {
+    "message": "Il link precedente di $FILE$ non è sull'URL base di questo account: il file viene ricaricato. Controlla l'URL base nelle impostazioni dell'account.",
     "placeholders": {
       "file": {
         "content": "$1"

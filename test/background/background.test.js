@@ -23,7 +23,7 @@ async function settle(rounds = 20) {
 }
 
 test('background scenarios', async () => {
-  const sandbox = {};
+  const sandbox = { URL };
   const context = vm.createContext(sandbox);
   const run = (code, filename) => vm.runInContext(code, context, { filename });
 

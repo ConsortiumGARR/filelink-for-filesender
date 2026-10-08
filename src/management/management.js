@@ -4,6 +4,7 @@ const params = new URL(location.href).searchParams;
 const accountId = params.get('accountId');
 
 const elBase = document.getElementById('baseUrl');
+const elSiteWarning = document.getElementById('siteWarning');
 const elUser = document.getElementById('username');
 const elEmail = document.getElementById('email');
 const elKey = document.getElementById('apikey');
@@ -21,7 +22,8 @@ const elStatus = document.getElementById('status');
 
 const FALLBACK_MAX_DAYS = 30;
 
-const { DEFAULT_OPTIONS, normalizeBaseUrl, isInsecureUrl } = globalThis.fsAccount;
+const { DEFAULT_OPTIONS, normalizeBaseUrl, isInsecureUrl, siteUrlOf, sameSite } =
+  globalThis.fsAccount;
 const { t } = globalThis.uiCommon;
 globalThis.uiCommon.localize();
 
@@ -37,6 +39,11 @@ function setTestStatus(msg, kind) {
   elTestStatus.className = kind || '';
 }
 
+function setSiteWarning(msg) {
+  elSiteWarning.textContent = msg;
+  elSiteWarning.hidden = !msg;
+}
+
 let wantedDays = null;
 let hasSavedDefaults = false;
 
@@ -50,10 +57,11 @@ async function loadInstance() {
     fillDays(FALLBACK_MAX_DAYS, null);
     elDaysHint.textContent = '';
     elSiteLink.textContent = '';
+    setSiteWarning('');
     return;
   }
   const baseUrl = normalizeBaseUrl(raw);
-  const site = baseUrl.replace(/\/rest\.php$/i, '/');
+  const site = siteUrlOf(baseUrl);
   elSiteLink.href = site;
   elSiteLink.textContent = site;
   let res = null;
@@ -69,6 +77,10 @@ async function loadInstance() {
     fillDays(FALLBACK_MAX_DAYS, null);
     elDaysHint.textContent = t('mgmtInstanceUnavailable');
   }
+  // The address the server declares only produces a warning: which links belong to the
+  // account is decided by the base URL entered here.
+  const declared = res && res.ok ? res.cfg.siteUrl : null;
+  setSiteWarning(declared && !sameSite(declared, site) ? t('mgmtSiteUrlMismatch', declared) : '');
 }
 
 if (!accountId) {

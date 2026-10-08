@@ -50,7 +50,17 @@ var S = {
   listeners: {},
   msgListeners: [],
   removedListeners: [],
+  held: [],
+  linkCalls: [],
+  instanceCalls: 0,
+  // site_url of instances whose REST base URL is another host name (an alias)
+  siteUrls: { 'https://alias.example.org/rest.php': 'https://fs.example.org/' },
 };
+
+// Like FileSender: every download link is site_url + '?s=download&token=...'.
+function fakeSiteUrl(baseUrl) {
+  return S.siteUrls[baseUrl] || baseUrl.replace(/rest\.php$/, '');
+}
 var NOW = Math.round(Date.now() / 1000);
 
 function ev(name) {
@@ -65,7 +75,7 @@ globalThis.browser = {
     local: {
       get: function (id) {
         var o = {};
-        o[id] = S.config;
+        o[id] = S.configs && id in S.configs ? S.configs[id] : S.config;
         return Promise.resolve(o);
       },
       remove: function (id) {
@@ -172,8 +182,10 @@ globalThis.filesender = {
     if (/\.exe$/.test(name)) return { code: 'extension', ext: 'exe' };
     return null;
   },
-  getInstanceConfig: function () {
+  getInstanceConfig: function (account) {
+    S.instanceCalls++;
     return Promise.resolve({
+      siteUrl: fakeSiteUrl(account.baseUrl),
       defaultDays: 14,
       maxDays: 14,
       maxTransferSize: 1000000,
@@ -209,7 +221,8 @@ globalThis.filesender = {
       },
     });
   },
-  getLinkStatus: function () {
+  getLinkStatus: function (acc, url) {
+    S.linkCalls.push(url);
     if (S.link instanceof Error) return Promise.reject(S.link);
     return Promise.resolve(S.link);
   },
@@ -222,12 +235,23 @@ globalThis.filesender = {
     });
     var applied = Object.assign({}, opts.options);
     if (S.dropOption) applied[S.dropOption] = false;
-    return Promise.resolve({
-      url: 'https://fs/?s=download&token=new-' + file.name,
+    var result = {
+      url: fakeSiteUrl(acc.baseUrl) + '?s=download&token=new-' + file.name,
       expires: NOW + 14 * 86400,
       transfer: { options: applied },
       transferId: 'T-' + file.name,
       puid: 'P-' + file.name,
+    };
+    if (!S.hold) return Promise.resolve(result);
+    // Held until the scenario releases it, so it can be aborted while in progress.
+    return new Promise(function (resolve) {
+      S.held.push({
+        name: file.name,
+        signal: acc.signal,
+        release: function () {
+          resolve(result);
+        },
+      });
     });
   },
   deleteTransfer: function (acc, transfer) {
@@ -260,14 +284,22 @@ function reset(cfg) {
   S.link = null;
   S.results = {};
   S.dropOption = null;
+  S.configs = null;
+  S.hold = false;
+  S.held = [];
+  S.linkCalls = [];
+  S.instanceCalls = 0;
 }
 function file(id, name, size) {
   return { id: id, name: name, data: { size: size === undefined ? 10 : size } };
 }
-function start(key, f, related, tab) {
-  S.listeners.upload({ id: 'acc1' }, f, tab || null, related).then(function (r) {
+function startOn(accountId, key, f, related, tab) {
+  S.listeners.upload({ id: accountId }, f, tab || null, related).then(function (r) {
     S.results[key] = r;
   });
+}
+function start(key, f, related, tab) {
+  startOn('acc1', key, f, related, tab);
 }
 function msg(m) {
   var out = null;
