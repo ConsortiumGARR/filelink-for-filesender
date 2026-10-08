@@ -13,7 +13,7 @@ with `OK` or `ALL PASS`.
 Setup:
 
 1. `sh tools/build.sh`, then Debug Add-ons -> remove the previous version -> "Load
-   Temporary Add-on" -> `dist/filelink-for-filesender-1.0.0.xpi`. The install prompt
+   Temporary Add-on" -> `dist/filelink-for-filesender-1.0.1.xpi`. The install prompt
    lists: access to all websites, notifications and message composition (used only to
    know whether a mail was sent or saved).
 2. "Inspect" on the extension -> Console -> "Persist Logs".

@@ -11,11 +11,14 @@ release; nothing does this automatically (see `AGENTS.md`).
 
 ## 1. GitHub Releases (already automated)
 
-1. Bump `version` in `src/manifest.json`, commit.
+1. Bump `version` in `src/manifest.json` and the xpi name in `docs/TESTING.md`, commit.
 2. Tag the commit `X.Y.Z` (matching the manifest exactly) and push the tag.
 3. `.github/workflows/release.yml` runs the full test suite, checks the tag matches the
    manifest version, builds the xpi with `tools/build.sh`, and publishes it as a GitHub
    release asset with auto-generated notes.
+4. Replace the auto-generated release notes, which only list merged pull requests (with
+   commits pushed straight to `main` they are just a link), with the user-facing
+   changes: `gh release edit X.Y.Z --notes-file <file>`.
 
 Users who installed via "Load Temporary Add-on" or "Install Add-on From File" (see
 README.md) do not get automatic updates; they reinstall the new `.xpi` by hand.
@@ -45,10 +48,11 @@ within 10 days.
 
 ### Future updates
 
-1. Do steps 1-3 under "GitHub Releases" above first (bump, tag, push -- CI builds and
-   publishes to GitHub).
+1. Do steps 1-4 under "GitHub Releases" above first (bump, tag, push, release notes --
+   CI builds and publishes to GitHub).
 2. Upload the same `dist/filelink-for-filesender-<version>.xpi` as a new version of the
-   existing ATN listing (not a new submission). No documented ATN API for this was
-   found, so it is a manual upload through the developer hub for now.
+   existing ATN listing (not a new submission), with the same release notes as GitHub.
+   No documented ATN API for this was found, so it is a manual upload through the
+   developer hub for now.
 3. Users who installed from ATN get the new version automatically; GitHub Releases users
    still update manually.
